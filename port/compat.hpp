@@ -52,6 +52,9 @@ inline LRESULT PortCaptionHitTest(HWND window, WPARAM wp, LPARAM lp) {
     return HTSYSMENU;
  return hit;
 }
+INT_PTR CALLBACK PortRunDialog(HWND,UINT,WPARAM,LPARAM);
+void PortSaveDesktopPlacement(HWND);
+void PortRestoreDesktopPlacement(HWND);
 void PortStartDiagnostics();
 void PortLog(const char*);
 BOOL PortRegisterControls(HINSTANCE);

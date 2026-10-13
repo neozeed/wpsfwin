@@ -197,6 +197,7 @@ LRESULT WPDESKTOP::ClientWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lPa
          {
             case IDYES:                      
                // Save desktop state.             
+               PortSaveDesktopPlacement(hWnd);
                SaveDesktop();   
                break;                
                
@@ -311,104 +312,9 @@ BOOL CALLBACK WPDESKTOPEnumWindowsProc(HWND hWnd,LPARAM lParam)
 //---------------------------------------------------------------------
 #pragma warning( disable : 4100 ) // Disable warning about "unreferenced formal parameters".
 INT_PTR CALLBACK RunDlgProc(HWND hDlg,UINT uMsg,WPARAM wParam,LPARAM lParam)
-{  
-   RECT  rcDialog;
-   UINT  uReturnValue;
-   char  szFile[_MAX_PATH+1],
-         szFileTitle[(_MAX_FNAME+_MAX_EXT)+1],
-         szFilter[] = "Programs|*.exe;*.pif;*.com;*.bat|All Files (*.*)|*.*|",
-         szErrorMsg[128],*pszParams;
-   int   nCmdShow;         
-
-   // Process dialog box message...
-   switch (uMsg)
-   {
-      case WM_INITDIALOG:                                           
-         // Get dialog box's size.                        
-         GetWindowRect(hDlg,&rcDialog);
-         // Center dialog box with respect to the screen.
-         MoveWindow(hDlg,(GetSystemMetrics(SM_CXSCREEN)-rcDialog.right)/2,
-                         (GetSystemMetrics(SM_CYSCREEN)-rcDialog.bottom)/2,
-                         rcDialog.right,
-                         rcDialog.bottom,FALSE);
-         // By default, all applications are run in "normal" show state.
-         CheckRadioButton(hDlg,IDB_NORMAL,IDB_MAXIMIZED,IDB_NORMAL);
-         return (TRUE);
-      
-      case WM_COMMAND:
-         switch (LOWORD(wParam))
-         {
-            case IDOK:
-               // Get current contents of command line edit control.
-               GetDlgItemText(hDlg,IDE_COMMANDLINE,szFile,sizeof(szFile));
-               // Get show state to run application in.
-               if (IsDlgButtonChecked(hDlg,IDB_NORMAL)==1)
-                  nCmdShow = SW_SHOWNORMAL;
-               else
-               if (IsDlgButtonChecked(hDlg,IDB_MINIMIZED)==1)
-                  nCmdShow = SW_SHOWMINIMIZED;
-               else
-                  nCmdShow = SW_SHOWMAXIMIZED;
-                  
-               
-               // Find start of program parameters in command line by finding the 
-               // first occurrence of a white space character in command line string.
-               pszParams = strchr(szFile,' ');
-               // If there are any parameters in command line string...
-               if (pszParams!=NULL)
-               {                      
-                  // NULL-terminate program name.
-                  *pszParams= '\0';          
-                  // Point to parameters by incrementing pointer to next character.
-                  pszParams++;
-               }
-                  
-               // Execute program in command line.                               
-               uReturnValue = (UINT_PTR)ExecuteApplication(GetDesktopWindow(),"open",szFile,pszParams,NULL,nCmdShow);
-               
-               // Check for possible errors executing program.
-               if (uReturnValue<32)
-               {    
-                  switch (uReturnValue)
-                  {
-                     case 16:
-                        break;
-                        
-                     default:
-                        // Report error code as a meaningful text string.
-                        sprintf(szErrorMsg,GetString(IDSTR_ERR_RUN),
-                           uReturnValue,
-                           szFile,
-                           apszWinExecErrorString[uReturnValue]);
-                        MessageBox(NULL,szErrorMsg,GetString(IDSTR_ERR_CAPTION),MB_OK|MB_ICONSTOP);
-                        // Do not end dialog since could not execute application successfully.
-                        return (FALSE);
-                  }
-               }        
-               // End dialog since application was execute successfully.       
-               EndDialog(hDlg,TRUE);
-               break;
-               
-            case IDCANCEL:
-               EndDialog(hDlg,FALSE);
-               break;
-            
-            case IDB_RUNBROWSE:
-               // Open "Run" dialog box, and select program to run.                         
-               if (CommonFileDialogBox(hDlg,(OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_SHAREAWARE),GetString(IDSTR_FILEDLG_TITLE_RUN),szFilter,szFile,szFileTitle)==TRUE)
-                  SetDlgItemText(hDlg,IDE_COMMANDLINE,szFile);
-               break;
-             
-            case IDB_HELP:
-               // Open help file with "Run" help information.
-               WinHelp(g_wpEnvironment.hwndDesktop,GetString(IDSTR_HELP_FILENAME),HELP_CONTEXT,HELPID_LEVEL1_MRUN);
-               break;
-         }                   
-         break;
-   }
-   
-   return (FALSE);
-}         
+{
+   return PortRunDialog(hDlg,uMsg,wParam,lParam);
+}
 
 //---------------------------------------------------------------------
 // PRODUCT INFORMATION DIALOG PROCEDURE

@@ -13,7 +13,7 @@ CXXFLAGS = -std=gnu++98 -O2 -g -Wall -Wno-write-strings -Wno-unknown-pragmas -Wn
 SOURCES = $(filter-out src/wpclrpal.cpp,$(wildcard src/*.cpp)) $(wildcard port/*.cpp)
 OBJECTS = $(patsubst %.cpp,$(OBJ)/%.o,$(SOURCES))
 all: $(OUT)/wpshell.exe $(OUT)/WPS_ENUS.DLL
-$(OBJ)/%.o: %.cpp $(wildcard include/*) port/compat.hpp
+$(OBJ)/%.o: %.cpp $(wildcard include/*) $(wildcard port/*.hpp)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 $(OBJ)/shell.res.o: resources/wpshell.rc $(shell find resources -type f) $(wildcard include/*.h)

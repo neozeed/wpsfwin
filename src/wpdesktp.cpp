@@ -560,7 +560,7 @@ void WPDESKTOP::SetImagePath(char *pszImagePath)
 //---------------------------------------------------------------------
 const char *WPDESKTOP::GetCaptionTitle(void)
 {
-   return "Workplace Shell for Windows - Native Port R2";
+   return "Workplace Shell for Windows - Native Port R3";
 }
 
 //---------------------------------------------------------------------
@@ -629,6 +629,7 @@ BOOL WPDESKTOP::Open(void)
 
          // Show and update Workplace Shell desktop.
          ShowWindow(GetHandle(),SW_SHOW);
+         PortRestoreDesktopPlacement(GetHandle());
          ::UpdateWindow(GetHandle());
 
          // Invalidate for redraw all the top-level desktop objects.

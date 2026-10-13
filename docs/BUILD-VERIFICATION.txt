@@ -1,16 +1,17 @@
-WPSFWIN native port R2 - build verification
-Date: 2026-10-13
-Both x86 and x64 built with MinGW-w64 GCC 13.2.0 and the supplied Makefile.
-Configured compiler error gates passed; legacy warnings remain.
+WPSFWIN native port R3 - build verification
+2026-10-13; MinGW-w64 GCC 13.2.0; GNU make.
+x86 and x64 builds passed configured compiler error gates.
+Run command parser: 12 host-executed C++98 cases passed.
 
-x86: native GUI PE PASS. Imports: ADVAPI32.dll, COMCTL32.dll, COMDLG32.DLL, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.DLL
-x86/wpshell.exe: resources {1: 1, 2: 44, 3: 48, 9: 1, 12: 1, 14: 48, 16: 1}; SHA256 3de231ba7c366f26e1cae09739e6fe7f222f0589fc69f22fbadfb5bc6cfd369c
-x86/WPS_ENUS.DLL: resources {3: 1, 4: 7, 5: 23, 6: 8, 14: 1, 16: 1}; SHA256 7a5255a05ee8fbe2d189aefb5bc20a87d284b0324fad8f94b91f2b4e1561e344
-x64: native GUI PE PASS. Imports: ADVAPI32.dll, COMCTL32.dll, comdlg32.dll, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.dll
-x64/wpshell.exe: resources {1: 1, 2: 44, 3: 48, 9: 1, 12: 1, 14: 48, 16: 1}; SHA256 b891f0ca3e62bfeec0ce3e6626f8ebe4c7f4ea434dc5efd4ed0f81e34f42256d
-x64/WPS_ENUS.DLL: resources {3: 1, 4: 7, 5: 23, 6: 8, 14: 1, 16: 1}; SHA256 5b2ec15ea68529ddf965a6e5683d3a7469110b4201b9dd7ead813543854bf8b3
+x86 imports: ADVAPI32.dll, COMCTL32.dll, COMDLG32.DLL, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.DLL
+x86/wpshell.exe: PE and resources PASS; SHA256 7658e7b1a37c7f56fe318f0de987ac4f4f0315cbeafe3abd0d916e676e1101a7
+x86/WPS_ENUS.DLL: PE and resources PASS; SHA256 e610c7be256a1647db355fc0a8c559b5494f8fdd576af1005f8990f001ef9ac3
+x64 imports: ADVAPI32.dll, COMCTL32.dll, comdlg32.dll, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.dll
+x64/wpshell.exe: PE and resources PASS; SHA256 599755254e9b0587325d477391d2e75b1a4c6bc4ec60ea90ce498ae4a70ef6b2
+x64/WPS_ENUS.DLL: PE and resources PASS; SHA256 f8c2eacd37e85cf720f4fe658d3d6b48a6648a7af406ea3b2c5d4beeeea428db
 
-R1 runtime: user confirmed the app runs and supplied desktop, drives and settings screenshots.
-R2 runtime: not tested here; Wine cannot start because local sockets are prohibited.
-Next Windows checks: labelled/unlabelled drives; double-click system-menu icon to close;
-desktop color changes and bitmap background; reopening existing R1 profile.
+R2 live: user confirmed appearance and animations; screenshots show background and labelled drives.
+R3 Windows runtime: not tested here. Wine is blocked by the environment local-socket restriction.
+Live checks: Run browse/quoted paths, environment variables, history, failures, documents/URLs;
+resize/maximize and reopen; save-disabled exit; monitor removal.
+Command parser test: g++ -std=c++98 tests/run_command_test.cpp -o /tmp/wps-run-test && /tmp/wps-run-test

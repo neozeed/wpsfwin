@@ -1,11 +1,33 @@
-# Workplace Shell for Windows — native port R2
+# Workplace Shell for Windows — native port R3
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
 folder, drawing, drag/drop, template and settings code.
 
-**Status: R1 runs on the user's Windows machine. R2 builds and PE resources
-have been checked; these corrective changes still need a Windows smoke test.**
+**Status: R2 is live-proven on the user's Windows machine, including the
+background, drive labels and original animations. R3 compiles for x86/x64;
+its new Windows interactions still need a live check.**
+
+## R3 features
+
+- Run Program now supports quoted executable paths, arguments, environment
+  variables such as `%SystemRoot%`, documents, folders and URLs.
+- The command box remembers the last ten successful launches. Browse quotes
+  selected paths correctly, and failures leave the dialog open with a Windows
+  error message. Help explains the new syntax without requiring WinHelp.
+- The desktop remembers its normal position/size and maximized state when
+  exiting with desktop saving enabled. Minimized windows reopen normally (or
+  maximized if appropriate), and disconnected-monitor positions are clamped
+  to an available monitor's work area.
+
+Right-click the desktop and select **Run**. Try `%SystemRoot%\notepad.exe`,
+then browse to an executable under Program Files and add any arguments after
+its closing quote. Reopen Run to check the recent-command list. Resize or
+maximize the desktop, exit with saving enabled, and relaunch.
+
+Run history and window placement use new sections in `wpsettings.ini`.
+Delete `[RunHistory]` to clear remembered commands or `[NativeDesktop]` to
+reset window placement while retaining other settings.
 
 ## R2 corrections
 
@@ -17,8 +39,8 @@ have been checked; these corrective changes still need a Windows smoke test.**
   instead of the old transparent Win16 desktop override. Scaled bitmap
   backgrounds are also enabled.
 
-R1 profiles remain compatible. Close R1 and replace the EXE and matching
-resource DLL with R2 from the same architecture; keep your existing
+R1/R2 profiles remain compatible. Close the old version and replace the EXE and matching
+resource DLL with R3 from the same architecture; keep your existing
 `wpshell32.dat` and `wpsettings.ini`. Drive titles refresh when the profile loads.
 
 ## Try it
