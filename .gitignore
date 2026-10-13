@@ -1,0 +1,11 @@
+# Ignore all EXE files
+*.exe
+*.EXE
+
+# Ignore all DLL files
+*.dll
+*.DLL
+
+# Ignore any bin directory anywhere in the tree
+bin/
+**/bin/

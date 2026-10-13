@@ -1,0 +1,26 @@
+WPSFWIN native port R1 - build verification
+Date: 2026-10-13
+
+Toolchain: MinGW-w64 GCC 13.2.0, GNU make.
+Both architectures rebuilt from source with the supplied Makefile.
+Build gates: return-type, format, class-memaccess, maybe-uninitialized and
+integer-to-pointer-cast diagnostics are errors. Other legacy warnings remain.
+
+x86: PASS - native GUI PE, correct machine, entrypoint present.
+  EXE resources: {1: 1, 2: 44, 3: 48, 9: 1, 12: 1, 14: 48, 16: 1}
+  Imports: ADVAPI32.dll, COMCTL32.dll, COMDLG32.DLL, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.DLL
+  Resource DLL: PASS - all 116 strings (2000-2115), 7 menus, 23 dialogs.
+  SHA256 wpshell.exe: 34e78e3727d8d20d8e7253db2691ce4aa297c113bd7d64ddb926f83211253438
+  SHA256 WPS_ENUS.DLL: 7a5255a05ee8fbe2d189aefb5bc20a87d284b0324fad8f94b91f2b4e1561e344
+
+x64: PASS - native GUI PE, correct machine, entrypoint present.
+  EXE resources: {1: 1, 2: 44, 3: 48, 9: 1, 12: 1, 14: 48, 16: 1}
+  Imports: ADVAPI32.dll, COMCTL32.dll, comdlg32.dll, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.dll
+  Resource DLL: PASS - all 116 strings (2000-2115), 7 menus, 23 dialogs.
+  SHA256 wpshell.exe: e4f94cefbda83e700649b9d231827bcf7d88ac8f45da7cdb05e1ca5334079117
+  SHA256 WPS_ENUS.DLL: 5b2ec15ea68529ddf965a6e5683d3a7469110b4201b9dd7ead813543854bf8b3
+
+Runtime: NOT VERIFIED.
+Wine launch attempted; wineserver stopped with: socket: Operation not permitted.
+The application did not reach its entry point in that attempt.
+No successful GUI, launching, notebook, drag/drop or persistence test is claimed.

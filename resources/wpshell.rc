@@ -1,0 +1,243 @@
+//=====================================================================
+// WPSHELL.RC
+//    WPSHELL's Windows 3.1 resource file.
+//
+// Date Created :  01/26/94
+// Last Update  :  03/08/95
+// Written By   :  Mario E. De Armas
+// Compiler Used:  MS Visual C++ 1.5
+//
+// Copyright IBM Corporation, 1994-1995. All rights reserved.
+//
+//
+// FILE LOG:
+// DATE        | ACTION/CHANGE                           | PROGRAMMER
+// 01/26/94    | Creation.                               | MDA
+//=====================================================================
+
+
+//---------------------------------------------------------------------
+// HEADER FILES
+//---------------------------------------------------------------------
+// Windows library header files.
+#include <windows.h>
+#include <winver.h>
+// Workplace Shell resource ID's header file.
+#include "resource.h"
+
+
+//-----------------------------------------------------------------------------
+// LOCAL CONSTANTS
+//-----------------------------------------------------------------------------
+// String constants used for version information and "Product Information" dialog.
+#define VER_STR_PRODUCTNAME      "Workplace Shell for Windows\0"
+
+//-----------------------------------------------------------------------------
+// VERSION INFORMATION
+//-----------------------------------------------------------------------------
+VS_VERSION_INFO VERSIONINFO
+   FILEVERSION     1,0,0,0
+   PRODUCTVERSION  VER_MAJOR,VER_MINOR,0,0
+   FILEFLAGSMASK   0
+   FILEFLAGS       0
+   FILEOS          VOS_DOS_WINDOWS16
+
+   FILETYPE        VFT_APP
+   FILESUBTYPE     VFT_APP
+
+   BEGIN
+      BLOCK "StringFileInfo"
+      BEGIN
+         BLOCK "040904E4"
+         BEGIN
+            VALUE "CompanyName"        , "IBM Corporation\0"
+            VALUE "FileDescription"    , "Windows 3.1 Shell Replacement Program\0"
+            VALUE "FileVersion"        , "1.0.0\0"
+            VALUE "InternalName"       , "Workplace Shell\0"
+            VALUE "LegalCopyright"     , VER_STR_PRODUCTCOPYRIGHT
+            VALUE "ProductName"        , VER_STR_PRODUCTNAME
+            VALUE "OriginalFileName"   , "WPSHELL.EXE\0"
+            VALUE "ProductVersion"     , VER_STR_PRODUCTVERSION
+         END
+      END
+
+      BLOCK "VarFileInfo"
+      BEGIN
+         VALUE "Translation", 0x0409, 1252
+      END
+   END
+
+
+//-----------------------------------------------------------------------------
+// ACCELERATOR TABLES
+//-----------------------------------------------------------------------------
+IDA_WPSHELL ACCELERATORS
+{
+   "K"       , ID_EVENT_SPECIAL      , VIRTKEY , NOINVERT , CONTROL, ALT, SHIFT
+   VK_TAB    , ID_EVENT_PREVIOUS     , VIRTKEY , NOINVERT , SHIFT
+   VK_LEFT   , ID_EVENT_LEFT         , VIRTKEY , NOINVERT
+   VK_TAB    , ID_EVENT_NEXT         , VIRTKEY , NOINVERT
+   VK_RIGHT  , ID_EVENT_RIGHT        , VIRTKEY , NOINVERT
+   VK_UP     , ID_EVENT_UP           , VIRTKEY , NOINVERT
+   VK_DOWN   , ID_EVENT_DOWN         , VIRTKEY , NOINVERT
+   VK_NEXT   , ID_EVENT_PAGEDOWN     , VIRTKEY , NOINVERT
+   VK_PRIOR  , ID_EVENT_PAGEUP       , VIRTKEY , NOINVERT
+   VK_RETURN , ID_EVENT_OPEN         , VIRTKEY , NOINVERT
+   VK_RETURN , ID_EVENT_SETTINGS     , VIRTKEY , NOINVERT , ALT
+   VK_DELETE , ID_EVENT_DELETE       , VIRTKEY , NOINVERT
+   VK_F1     , ID_EVENT_HELP         , VIRTKEY , NOINVERT
+   VK_F1     , ID_EVENT_HELP         , VIRTKEY , NOINVERT , CONTROL
+   "^S"      , ID_EVENT_SELECTALL    , NOINVERT
+   "^D"      , ID_EVENT_DESELECTALL  , NOINVERT
+   VK_ESCAPE , ID_EVENT_DESELECTALL  , VIRTKEY , NOINVERT
+   VK_F10    , ID_EVENT_DESKTOP_POPUP, VIRTKEY , NOINVERT, SHIFT
+}
+
+
+//-----------------------------------------------------------------------------
+// ICONS
+//-----------------------------------------------------------------------------
+// Windows 3.1 system icon.
+IDI_WINSYS              ICON    DISCARDABLE     icons/system/wpsfwin.ico
+IDI_DESKTOP             ICON    DISCARDABLE     icons/system/desktop.ico
+IDI_MINVIEWER           ICON    DISCARDABLE     icons/system/minview.ico
+// Default object icons.
+IDI_DEFAULTOBJECT       ICON    DISCARDABLE     icons/defaults/object.ico
+IDI_DEFAULTDATA         ICON    DISCARDABLE     icons/defaults/data.ico
+IDI_DEFAULTPROGRAM      ICON    DISCARDABLE     icons/defaults/program.ico
+IDI_DEFAULTFOLDER       ICON    DISCARDABLE     icons/defaults/folder.ico
+IDI_DEFAULTSHREDDER     ICON    DISCARDABLE     icons/defaults/shredder.ico
+// Template folder and object icons.
+IDI_TEMPLATE_FOLDER     ICON    DISCARDABLE     icons/template/template.ico
+IDI_GENERICTEMPLATE     ICON    DISCARDABLE     icons/template/tmpobj.ico
+IDI_PROGTEMPLATE        ICON    DISCARDABLE     icons/template/tmpprog.ico
+IDI_FOLDERTEMPLATE      ICON    DISCARDABLE     icons/template/tmpflder.ico
+IDI_DATATEMPLATE        ICON    DISCARDABLE     icons/template/tmpdata.ico
+IDI_SHREDDERTEMPLATE    ICON    DISCARDABLE     icons/template/tmpshrdr.ico
+// Drives icons.
+IDI_DRIVES_FOLDER       ICON    DISCARDABLE     icons/drives/drives.ico
+IDI_FLOPPYDRIVE         ICON    DISCARDABLE     icons/drives/floppy.ico
+IDI_HARDDRIVE           ICON    DISCARDABLE     icons/drives/hdrive.ico
+
+// Setup folder objects.
+IDI_SYSTEMSETUP         ICON    DISCARDABLE     icons/setup/syssetup.ico
+IDI_SYSTEM              ICON    DISCARDABLE     icons/setup/system.ico
+IDI_MOUSE               ICON    DISCARDABLE     icons/setup/mouse.ico
+IDI_COUNTRY             ICON    DISCARDABLE     icons/setup/country.ico
+IDI_KEYBOARD            ICON    DISCARDABLE     icons/setup/keyboard.ico
+IDI_SOUND               ICON    DISCARDABLE     icons/setup/sound.ico
+IDI_SELECTIVEINSTALL    ICON    DISCARDABLE     icons/setup/install.ico
+IDI_COLORPALETTE        ICON    DISCARDABLE     icons/setup/colorsch.ico
+IDI_FONTPALETTE         ICON    DISCARDABLE     icons/setup/fontpal.ico
+
+// Miscellaneous icons:
+// Windows PROGMAN migration folder.
+IDI_PROGMANFOLDER       ICON    DISCARDABLE     icons/misc/migrate/pmfolder.ico
+// Misc. desktop objects (OS/2 2.x icons)
+IDI_OS2SYS              ICON    DISCARDABLE     icons/misc/os2obj/os2sys.ico
+IDI_GENERAL             ICON    DISCARDABLE     icons/misc/os2obj/general.ico
+IDI_HELP                ICON    DISCARDABLE     icons/misc/os2obj/help.ico
+IDI_INFO                ICON    DISCARDABLE     icons/misc/os2obj/info.ico
+IDI_STARTUP             ICON    DISCARDABLE     icons/misc/os2obj/startup.ico
+IDI_TUTORIAL            ICON    DISCARDABLE     icons/misc/os2obj/tutorial.ico
+// Misc. multimedia.
+IDI_MULTIMEDIAFOLDER    ICON    DISCARDABLE     icons/misc/mmedia/mmpm2.ico
+IDI_CDPLAYER            ICON    DISCARDABLE     icons/misc/mmedia/cdplayer.ico
+IDI_DIGITALVIDEO        ICON    DISCARDABLE     icons/misc/mmedia/digvideo.ico
+// Misc. DOS sessions.
+IDI_DOSFULLSCREEN       ICON    DISCARDABLE     icons/misc/dos/dosfull.ico
+IDI_DOSWINDOW           ICON    DISCARDABLE     icons/misc/dos/doswin.ico
+
+// Templates #2
+IDI_DRIVETEMPLATE       ICON    DISCARDABLE     icons/template/tmpdrive.ico
+// Drives #2
+IDI_CDROM_DRIVE         ICON    DISCARDABLE     icons/drives/cdrom.ico
+IDI_NETWORK_DRIVE       ICON    DISCARDABLE     icons/drives/netdrive.ico
+IDI_RAM_DRIVE           ICON    DISCARDABLE     icons/drives/ramdrive.ico
+// Misc. multimedia icons #2
+IDI_MIDI_FILE           ICON    DISCARDABLE     icons/misc/mmedia/mididata.ico
+IDI_AUDIO_FILE          ICON    DISCARDABLE     icons/misc/mmedia/auddata.ico
+
+// Icons used in Workplace Shell cursor creation.
+IDI_NOSIGN              ICON    DISCARDABLE     icons/cursor/nosign.ico
+IDI_COPYGRID            ICON    DISCARDABLE     icons/cursor/copygrid.ico
+IDI_SHADOWCIRCLE        ICON    DISCARDABLE     icons/cursor/shadow.ico
+// Non-client area window effects.
+IDI_BUTTON_EFFECT       ICON    DISCARDABLE     icons/ncwindow/button.ico
+
+
+//-----------------------------------------------------------------------------
+// CURSORS
+//-----------------------------------------------------------------------------
+IDC_WAITCURSOR            CURSOR   DISCARDABLE    cursors/wait.cur
+
+
+//-----------------------------------------------------------------------------
+// BITMAPS
+//-----------------------------------------------------------------------------
+
+// Minimize/Maximize Window Buttons Bitmaps
+
+// High-Resolution (1024x768).
+// Style 1.
+IDB_HIRES_1_MINMAX_UP   BITMAP  DISCARDABLE     bitmaps/minmax/hi_1bu_n.bmp
+IDB_HIRES_1_MIN_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/hi_1mn_n.bmp
+IDB_HIRES_1_MAX_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/hi_1mx_n.bmp
+IDB_HIRES_1_X_MINMAX_UP BITMAP  DISCARDABLE     bitmaps/minmax/hi_1bu_x.bmp
+IDB_HIRES_1_X_MIN_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/hi_1mn_x.bmp
+IDB_HIRES_1_X_MAX_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/hi_1mx_x.bmp
+// Style 2.
+IDB_HIRES_2_MINMAX_UP   BITMAP  DISCARDABLE     bitmaps/minmax/hi_2bu_n.bmp
+IDB_HIRES_2_MIN_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/hi_2mn_n.bmp
+IDB_HIRES_2_MAX_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/hi_2mx_n.bmp
+IDB_HIRES_2_X_MINMAX_UP BITMAP  DISCARDABLE     bitmaps/minmax/hi_2bu_x.bmp
+IDB_HIRES_2_X_MIN_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/hi_2mn_x.bmp
+IDB_HIRES_2_X_MAX_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/hi_2mx_x.bmp
+
+// Low-Resolution (640x480 and 800x600).
+// Style 1.
+IDB_LORES_1_MINMAX_UP   BITMAP  DISCARDABLE     bitmaps/minmax/lo_1bu_n.bmp
+IDB_LORES_1_MIN_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/lo_1mn_n.bmp
+IDB_LORES_1_MAX_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/lo_1mx_n.bmp
+IDB_LORES_1_X_MINMAX_UP BITMAP  DISCARDABLE     bitmaps/minmax/lo_1bu_x.bmp
+IDB_LORES_1_X_MIN_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/lo_1mn_x.bmp
+IDB_LORES_1_X_MAX_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/lo_1mx_x.bmp
+// Style 2.
+IDB_LORES_2_MINMAX_UP   BITMAP  DISCARDABLE     bitmaps/minmax/lo_2bu_n.bmp
+IDB_LORES_2_MIN_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/lo_2mn_n.bmp
+IDB_LORES_2_MAX_DOWN    BITMAP  DISCARDABLE     bitmaps/minmax/lo_2mx_n.bmp
+IDB_LORES_2_X_MINMAX_UP BITMAP  DISCARDABLE     bitmaps/minmax/lo_2bu_x.bmp
+IDB_LORES_2_X_MIN_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/lo_2mn_x.bmp
+IDB_LORES_2_X_MAX_DOWN  BITMAP  DISCARDABLE     bitmaps/minmax/lo_2mx_x.bmp
+
+
+// Scrollbars Components Bitmaps
+
+// High-Resolution (1024x768)
+IDB_HIRES_SB_THUMB      BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_stbup.bmp
+IDB_HIRES_SB_THUMB_PUSH BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_stbdn.bmp
+IDB_HIRES_SB_LEFT       BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_slaup.bmp
+IDB_HIRES_SB_RIGHT      BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_sraup.bmp
+IDB_HIRES_SB_LEFT_PUSH  BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_sladn.bmp
+IDB_HIRES_SB_RIGHT_PUSH BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_sradn.bmp
+IDB_HIRES_SB_UP         BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_suaup.bmp
+IDB_HIRES_SB_DOWN       BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_sdaup.bmp
+IDB_HIRES_SB_UP_PUSH    BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_suadn.bmp
+IDB_HIRES_SB_DOWN_PUSH  BITMAP  DISCARDABLE     bitmaps/scrollbr/hr_sdadn.bmp
+
+// Low-Resolution (640x480 and 800x600).
+IDB_LORES_SB_THUMB      BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_stbup.bmp
+IDB_LORES_SB_THUMB_PUSH BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_stbdn.bmp
+IDB_LORES_SB_LEFT       BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_slaup.bmp
+IDB_LORES_SB_RIGHT      BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sraup.bmp
+IDB_LORES_SB_LEFT_PUSH  BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sladn.bmp
+IDB_LORES_SB_RIGHT_PUSH BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sradn.bmp
+IDB_LORES_SB_UP         BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_suaup.bmp
+IDB_LORES_SB_DOWN       BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sdaup.bmp
+IDB_LORES_SB_UP_PUSH    BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_suadn.bmp
+IDB_LORES_SB_DOWN_PUSH  BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sdadn.bmp
+
+
+// EOF WPSHELL.RC
+
+
