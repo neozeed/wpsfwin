@@ -3,6 +3,8 @@
 IBM's Workplace Shell, rescued from Windows 3.1 and rebuilt as a native
 32-bit and 64-bit Windows application.
 
+![Workplace Shell for Windows](workplace_shell_for_windows.png)
+
 This project ports the 1995 employee-written **Workplace Shell for Windows
 1.51** to modern Windows while preserving its unusual OS/2-inspired desktop,
 object model, folders, templates, shadows, settings notebooks, drag-and-drop
