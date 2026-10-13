@@ -20,8 +20,8 @@ BOOL PortInitializeEdition(const char* command) {
  return TRUE;
 }
 const char* PortEditionTitle() {
- if(!PortShellEdition())return "Workplace Shell for Windows - Native Port R6a";
- return fullSession?"Workplace Shell - Shell Edition R6a":"Workplace Shell - Shell Preview R6a";
+ if(!PortShellEdition())return "Workplace Shell for Windows - Native Port R6b";
+ return fullSession?"Workplace Shell - Shell Edition R6b":"Workplace Shell - Shell Preview R6b";
 }
 void PortLayoutShell(HWND window) {
  if(!PortShellEdition())return;

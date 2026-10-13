@@ -54,9 +54,9 @@ inline LRESULT PortCaptionHitTest(HWND window, WPARAM wp, LPARAM lp) {
  int buttonsHeight = GetSystemMetrics(SM_CYSIZE)<26 ? 19 : 27;
  int buttonsLeft = (r.right-r.left)-GetSystemMetrics(SM_CXFRAME)-buttonsWidth;
  if (y>=top && y<top+buttonsHeight && x>=buttonsLeft && x<buttonsLeft+buttonsWidth)
-    // The original bitmap puts restore/maximize on the left and minimize on
-    // the right. Split at its exact midpoint, including its one-pixel seam.
-    return x<buttonsLeft+(buttonsWidth/2) ? HTMAXBUTTON : HTMINBUTTON;
+    // The original OS/2-style bitmap puts its hide/minimize glyph on the
+    // left and maximize/restore on the right. Split at the exact midpoint.
+    return x<buttonsLeft+(buttonsWidth/2) ? HTMINBUTTON : HTMAXBUTTON;
  // Remove the much wider Windows 10/11 button zones outside the bitmap.
  if (hit==HTMINBUTTON || hit==HTMAXBUTTON || hit==HTCLOSE)
     return HTCAPTION;
