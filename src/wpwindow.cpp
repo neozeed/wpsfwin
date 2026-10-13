@@ -900,7 +900,9 @@ void WPWINDOW::Outline3DFrame(HDC hdc,int cx,int cy)
    // Caption bar 3-d lines coordinate points.
    ptLine[0].x = fcx-1;
    ptLine[0].y = GetSystemMetrics(SM_CYCAPTION)+fcy-2;
-   ptLine[1].x = cx-fcx-(GetSystemMetrics(SM_CXSIZE)*2)+2;
+   // End the caption underline at the actual legacy min/max bitmap rather
+   // than at two modern (and much wider) Windows caption-button metrics.
+   ptLine[1].x = cx-fcx-(GetSystemMetrics(SM_CYSIZE)<26 ? 38 : 50)+2;
    ptLine[1].y = ptLine[0].y;
    Polyline(hdc,&(ptLine[0]),2);
 
@@ -933,7 +935,7 @@ void WPWINDOW::DrawCaptionBarText(HDC hdc,int cx,int cy,BOOL fActive)
    SetRect(&rcCaption,
       (GetSystemMetrics(SM_CYSIZE)+GetSystemMetrics(SM_CXFRAME)+8),
       GetSystemMetrics(SM_CYFRAME),
-      (cx-GetSystemMetrics(SM_CXFRAME)),
+      (cx-GetSystemMetrics(SM_CXFRAME)-(GetSystemMetrics(SM_CYSIZE)<26 ? 38 : 50)),
       (GetSystemMetrics(SM_CYFRAME)+GetSystemMetrics(SM_CYSIZE)));
 
    // Reduce the caption rectangle by 1 so that the caption outline

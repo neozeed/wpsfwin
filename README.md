@@ -1,4 +1,4 @@
-# Workplace Shell for Windows — native port R6
+# Workplace Shell for Windows — native port R6a
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
@@ -7,6 +7,16 @@ folder, drawing, drag/drop, template and settings code.
 **Status: R5 desktop background is live-proven by the user's screenshot.
 R6 standalone and shell editions compile for x86/x64; shell preview/session
 behavior and the UI changes still need live Windows testing.**
+
+### R6a caption-button correction
+
+R6a corrects the legacy maximize/restore and minimize hit areas on Windows
+10/11. The program paints a combined 38x19 or 50x27 Win3-era bitmap, while
+modern DefWindowProc reports much wider native caption-button regions. R6a
+maps clicks to the exact painted bitmap: its left half is maximize/restore,
+its right half is minimize, and the extra modern region is ordinary draggable
+caption. Caption text and its underline also stop before the painted buttons.
+This is a binary/UI correction only; the R4-R6 profile format is unchanged.
 
 ## R6: separate standalone and shell editions
 

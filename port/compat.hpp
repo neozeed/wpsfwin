@@ -46,6 +46,20 @@ inline LRESULT PortCaptionHitTest(HWND window, WPARAM wp, LPARAM lp) {
  POINT p = PortMakePoint(lp);
  int x = p.x-r.left, y = p.y-r.top;
  int left = GetSystemMetrics(SM_CXFRAME), top = GetSystemMetrics(SM_CYFRAME);
+ // These are the exact dimensions of the combined legacy min/max bitmap
+ // selected by DrawMinMaxButtons(). Modern Windows caption buttons are much
+ // wider, so DefWindowProc's HTMINBUTTON/HTMAXBUTTON rectangles do not match
+ // what this application paints.
+ int buttonsWidth = GetSystemMetrics(SM_CYSIZE)<26 ? 38 : 50;
+ int buttonsHeight = GetSystemMetrics(SM_CYSIZE)<26 ? 19 : 27;
+ int buttonsLeft = (r.right-r.left)-GetSystemMetrics(SM_CXFRAME)-buttonsWidth;
+ if (y>=top && y<top+buttonsHeight && x>=buttonsLeft && x<buttonsLeft+buttonsWidth)
+    // The original bitmap puts restore/maximize on the left and minimize on
+    // the right. Split at its exact midpoint, including its one-pixel seam.
+    return x<buttonsLeft+(buttonsWidth/2) ? HTMAXBUTTON : HTMINBUTTON;
+ // Remove the much wider Windows 10/11 button zones outside the bitmap.
+ if (hit==HTMINBUTTON || hit==HTMAXBUTTON || hit==HTCLOSE)
+    return HTCAPTION;
  if ((hit == HTCAPTION || hit == HTSYSMENU) &&
      x >= left && x < left+GetSystemMetrics(SM_CYSIZE)+1 &&
      y >= top && y < top+GetSystemMetrics(SM_CYSIZE)+1)

@@ -1,7 +1,14 @@
-WPSFWIN native port R6 - build verification
+WPSFWIN native port R6a - build verification
 2026-10-13; MinGW-w64 GCC 13.2.0; GNU make.
 Four builds PASS: x86/x64, standalone/shell.
 Shell variant uses separate objects, output directory and executable name.
+
+R6a correction: non-client hit testing now derives its two button regions
+from the exact 38x19/50x27 legacy combined bitmap. Native HTMINBUTTON,
+HTMAXBUTTON and HTCLOSE results outside that bitmap become HTCAPTION.
+Caption text and underline bounds use the same bitmap width. All four variants
+were rebuilt after this correction. The R6 hashes below are retained as the
+previous-baseline record; packaged R6a binaries necessarily have new hashes.
 
 bin/x86/wpshell.exe: PE/resources PASS; SHA256 76792e238ed0c03a93adf88c60b8210a734229a66f22c99d0bd2062ebc8100b3
 bin/x86/WPS_ENUS.DLL: PE/resources PASS; SHA256 8f347d841fbc7031fc35e71df97e07bb76233ac09cb7c22433396bee17cf2e0b

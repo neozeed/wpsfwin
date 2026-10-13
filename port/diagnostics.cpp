@@ -17,5 +17,5 @@ static LONG WINAPI crash(EXCEPTION_POINTERS* e) {
 }
 void PortStartDiagnostics() {
  SetUnhandledExceptionFilter(crash);
- FILE* f=fopen("wpshell-port.log","w");if(f){fprintf(f,"WPSFWIN native port R6; pointer size %u\n",(unsigned)sizeof(void*));fclose(f);}
+ FILE* f=fopen("wpshell-port.log","w");if(f){fprintf(f,"WPSFWIN native port R6a; pointer size %u\n",(unsigned)sizeof(void*));fclose(f);}
 }
