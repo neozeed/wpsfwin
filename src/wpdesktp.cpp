@@ -560,7 +560,7 @@ void WPDESKTOP::SetImagePath(char *pszImagePath)
 //---------------------------------------------------------------------
 const char *WPDESKTOP::GetCaptionTitle(void)
 {
-   return "Workplace Shell for Windows - Native Port R5";
+   return PortEditionTitle();
 }
 
 //---------------------------------------------------------------------
@@ -586,7 +586,7 @@ void WPDESKTOP::GetDefaultIcon(char *pszIconPath,WORD *pwIconIndex)
 //---------------------------------------------------------------------
 DWORD WPDESKTOP::GetWindowExStyles(void)
 {
-   return (WPDESKTOP_DEFAULT_EX_STYLES);
+   return WPDESKTOP_DEFAULT_EX_STYLES | (PortShellEdition()?WS_EX_TOOLWINDOW:0);
 }
 
 //---------------------------------------------------------------------
@@ -594,7 +594,7 @@ DWORD WPDESKTOP::GetWindowExStyles(void)
 //---------------------------------------------------------------------
 DWORD WPDESKTOP::GetWindowStyles(void)
 {
-   return (WPDESKTOP_DEFAULT_STYLES);
+   return PortShellEdition()?(WS_POPUP|WS_CLIPCHILDREN):WPDESKTOP_DEFAULT_STYLES;
 }
 
 //---------------------------------------------------------------------
@@ -629,7 +629,8 @@ BOOL WPDESKTOP::Open(void)
 
          // Show and update Workplace Shell desktop.
          ShowWindow(GetHandle(),SW_SHOW);
-         PortRestoreDesktopPlacement(GetHandle());
+         if(PortShellEdition())PortStartShell(GetHandle());
+         else PortRestoreDesktopPlacement(GetHandle());
          ::UpdateWindow(GetHandle());
 
          // Invalidate for redraw all the top-level desktop objects.

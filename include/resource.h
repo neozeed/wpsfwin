@@ -21,7 +21,7 @@
 #define VER_MAJOR                2                 // Integer representing major version number.
 #define VER_MINOR                0                 // Integer representing minor version number.
 #define VER_STR_PRODUCTVERSION   "Release v2.0\0"  // String representing current version.
-#define VER_STR_PRODUCTCOPYRIGHT "Copyright © IBM Corporation 1994-1996\0"
+#define VER_STR_PRODUCTCOPYRIGHT "Copyright (c) IBM Corporation 1994-1996\0"
 
 
 //-----------------------------------------------------------------------------

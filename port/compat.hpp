@@ -68,6 +68,12 @@ inline BOOL PortIsProgramPath(const char* path) {
 extern BOOL g_portLegacyDataProfile;
 HBITMAP PortLoadBackground(const char*);
 BOOL PortBrowseBackground(HWND,char*,UINT);
+BOOL PortShellEdition();
+BOOL PortInitializeEdition(const char*);
+const char* PortEditionTitle();
+void PortStartShell(HWND);
+void PortLayoutShell(HWND);
+BOOL PortShellMessage(HWND,UINT,WPARAM,LPARAM);
 void PortStartDiagnostics();
 void PortLog(const char*);
 BOOL PortRegisterControls(HINSTANCE);

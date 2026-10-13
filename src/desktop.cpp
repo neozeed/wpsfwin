@@ -100,8 +100,12 @@ LRESULT WPDESKTOP::ClientWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lPa
    int         nResult;
                        
    // Process window message...
+   if(PortShellMessage(hWnd,uMsg,wParam,lParam))return 0;
    switch (uMsg)
    {
+      case WM_APP+900:
+         MenuSelection((WORD)wParam);return 0;
+
       case WM_NCHITTEST:
          return DefWindowProc(hWnd,uMsg,wParam,lParam);
 
@@ -338,13 +342,15 @@ INT_PTR CALLBACK ProductInfoDlgProc(HWND hDlg,UINT uMsg,WPARAM wParam,LPARAM lPa
    switch (uMsg)
    {
       case WM_INITDIALOG:      
-         // Get dialog box's size.                        
+         SetDlgItemTextA(hDlg,IDS_PRODUCTNAME,"Workplace Shell for Windows");
+         SetDlgItemTextA(hDlg,IDS_PRODUCTVERSION,PortEditionTitle());
+         SetDlgItemTextA(hDlg,IDS_PRODUCTCOPYRIGHT,"Copyright (c) IBM Corporation 1994-1996");
          GetWindowRect(hDlg,&rcDialog);
-         // Center dialog box with respect to the screen.
-         MoveWindow(hDlg,(GetSystemMetrics(SM_CXSCREEN)-rcDialog.right)/2,
-                         (GetSystemMetrics(SM_CYSCREEN)-rcDialog.bottom)/2,
-                         rcDialog.right,
-                         rcDialog.bottom,FALSE);
+         { RECT owner;HWND parent=GetParent(hDlg);
+           if(parent)GetWindowRect(parent,&owner);else SystemParametersInfo(SPI_GETWORKAREA,0,&owner,0);
+           SetWindowPos(hDlg,NULL,owner.left+(owner.right-owner.left-(rcDialog.right-rcDialog.left))/2,
+             owner.top+(owner.bottom-owner.top-(rcDialog.bottom-rcDialog.top))/2,0,0,SWP_NOSIZE|SWP_NOZORDER);
+         }
          return (TRUE);
       
       case WM_COMMAND:

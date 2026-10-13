@@ -78,6 +78,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
    char appdir[MAX_PATH];
    if (!PortGetAppDirectory(appdir,sizeof(appdir))) return 1;
    SetCurrentDirectoryA(appdir);
+   if(!PortInitializeEdition(lpCmdLine))return 1;
    PortStartDiagnostics();
    PortLog("Startup; application directory selected");
    // Any other instances of app running?

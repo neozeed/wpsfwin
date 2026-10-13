@@ -1,21 +1,33 @@
-WPSFWIN native port R5 - build verification
+WPSFWIN native port R6 - build verification
 2026-10-13; MinGW-w64 GCC 13.2.0; GNU make.
-Both architecture builds passed configured error gates.
+Four builds PASS: x86/x64, standalone/shell.
+Shell variant uses separate objects, output directory and executable name.
 
-x86/wpshell.exe: PE/resources PASS; SHA256 4cddf9d89d08458c95d2d9ea6561b3dda3c520ca41e8b08c222989056159c3e7
-x86/WPS_ENUS.DLL: PE/resources PASS; SHA256 af298bb8cd057b65b6df79c2ea9487bc32c1d8e051ee124ee4c90710cbd60cd3
-x86/WNDLIST.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
-x86/LAUNCHPD.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
-x86/WINSHUT.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
-x64/wpshell.exe: PE/resources PASS; SHA256 13b6c8f8ba93703c117f32992550a389799eaed25a49e7dc54629e4de3ecab90
-x64/WPS_ENUS.DLL: PE/resources PASS; SHA256 eb99ebf345017598a5e23fb9f19489444440c353f5b4559512aab785282d6965
-x64/WNDLIST.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
-x64/LAUNCHPD.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
-x64/WINSHUT.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
+bin/x86/wpshell.exe: PE/resources PASS; SHA256 76792e238ed0c03a93adf88c60b8210a734229a66f22c99d0bd2062ebc8100b3
+bin/x86/WPS_ENUS.DLL: PE/resources PASS; SHA256 8f347d841fbc7031fc35e71df97e07bb76233ac09cb7c22433396bee17cf2e0b
+bin/x86/WNDLIST.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x86/LAUNCHPD.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x86/WINSHUT.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x86/shell/wpshell-shell.exe: PE/resources PASS; SHA256 49dc9cc8f103e2a3157c0758ce333f600bdaa1d425cabc5f0a91efab390160e6
+bin/x86/shell/WPS_ENUS.DLL: PE/resources PASS; SHA256 c8b85bbd9cb1b4cbadde0473df13657c0d0d43f487e88c57b578b0edd211ce29
+bin/x86/shell/WNDLIST.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x86/shell/LAUNCHPD.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x86/shell/WINSHUT.EXE: PE/resources PASS; SHA256 64a8a8bb86416bf1b8dceeff5afcfc2c7f4e26881b42d8eafc6d7c5d02394922
+bin/x64/wpshell.exe: PE/resources PASS; SHA256 84dba4ff5f3b888c856c57ac5282ea7d2705eff2ee2eec1340bd6b31b8a6e08e
+bin/x64/WPS_ENUS.DLL: PE/resources PASS; SHA256 f570f4323db907a7144d399cb503380e55753e6cf606b6b3243e24c8f46fba77
+bin/x64/WNDLIST.EXE: PE/resources PASS; SHA256 7e2aa8f7aa2d5370d030dadc10ca9236efa7c3fb973c921f79f13c8e5c8c31d2
+bin/x64/LAUNCHPD.EXE: PE/resources PASS; SHA256 7e2aa8f7aa2d5370d030dadc10ca9236efa7c3fb973c921f79f13c8e5c8c31d2
+bin/x64/WINSHUT.EXE: PE/resources PASS; SHA256 7e2aa8f7aa2d5370d030dadc10ca9236efa7c3fb973c921f79f13c8e5c8c31d2
+bin/x64/shell/wpshell-shell.exe: PE/resources PASS; SHA256 36692a24165972dc9706da86a3b44674dcd058bee147d8032ba74ac75e56eca1
+bin/x64/shell/WPS_ENUS.DLL: PE/resources PASS; SHA256 93bf3384ca0312631c9c362c585cf6002679500e7f136daa8a150fac4193eb25
+bin/x64/shell/WNDLIST.EXE: PE/resources PASS; SHA256 10aee7d95f307d0451ebbbf5f1d2e792fb78d6624d568e691285b7dcf5d44747
+bin/x64/shell/LAUNCHPD.EXE: PE/resources PASS; SHA256 10aee7d95f307d0451ebbbf5f1d2e792fb78d6624d568e691285b7dcf5d44747
+bin/x64/shell/WINSHUT.EXE: PE/resources PASS; SHA256 10aee7d95f307d0451ebbbf5f1d2e792fb78d6624d568e691285b7dcf5d44747
 
-Runtime: new R5 GUI features NOT tested here; Wine local-socket restriction remains.
-No shutdown/logoff action was executed during testing.
-README lists image/mode/persistence and utility smoke tests.
-R5 preserves R4 profile layout and retains R1-R3 read migration.
-Native utility replacements: WNDLIST, LAUNCHPD, WINSHUT.
-PMTOWP and CONVINI remain unported historical migration tools.
+R5 background: user screenshot confirms live rendering.
+R6 runtime: NOT tested here; Wine local-socket restriction remains.
+No registry/startup or shell registration operations are implemented by the edition module.
+No Explorer termination or system work-area changes are implemented by that module.
+Preview is not a sandbox. Native file operations remain real.
+README documents preview, --shell, separate settings, recovery controls and remaining scope.
+Historical Win16 profile conversion removed from planned scope by user instruction.

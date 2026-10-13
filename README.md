@@ -1,11 +1,69 @@
-# Workplace Shell for Windows — native port R5
+# Workplace Shell for Windows — native port R6
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
 folder, drawing, drag/drop, template and settings code.
 
-**Status: R3 is confirmed working by the user. R5 and all three native
-utilities compile for x86/x64; their new Windows interactions need live testing.**
+**Status: R5 desktop background is live-proven by the user's screenshot.
+R6 standalone and shell editions compile for x86/x64; shell preview/session
+behavior and the UI changes still need live Windows testing.**
+
+## R6: separate standalone and shell editions
+
+| Edition | x64 executable | Behavior |
+| --- | --- | --- |
+| Standalone | `bin/x64/wpshell.exe` | Existing resizable desktop application |
+| Shell preview | `bin/x64/shell/wpshell-shell.exe` | Borderless desktop in monitor work area; Explorer continues running |
+| Shell session | `bin/x64/shell/wpshell-shell.exe --shell` | Full-monitor desktop for an explicitly configured alternate-shell session |
+
+The same layout is provided under `bin/x86`. Double-click the shell-edition
+EXE or `Preview.cmd` to try preview mode. **Neither mode changes Winlogon,
+registry shell settings, startup entries, Explorer, or the system work area.**
+Preview is an ordinary process alongside Explorer, not an isolated Windows
+desktop or sandbox. File operations still use the real filesystem.
+
+The bottom controls provide Run, Window List, LaunchPad, Explorer and Exit.
+Ctrl+Alt+R opens Run; Ctrl+Alt+W opens Window List; Ctrl+Alt+F12 exits.
+These shortcuts are registered only while the shell edition runs and may be
+unavailable if another application owns them. The on-screen controls and
+Alt+F4 remain available. In `--shell` mode, exiting starts Explorer first;
+Explorer startup failure leaves Workplace Shell open. Applications that are
+maximized may cover the bottom controls; use the shortcuts to reach Run/List.
+
+Each shell subdirectory has its own DLL, utilities, profile and settings.
+Do not overwrite the standalone settings to try it. To clone a desktop,
+close both editions and COPY `wpshell32.dat` and `wpsettings.ini` into the
+shell subdirectory. Existing image paths continue to reference their files.
+
+The shell edition is an experimental alternate desktop shell, not Explorer
+feature parity: it has no Start menu clone, notification area, appbar/taskbar
+reservation or automatic logon installation. Test preview first. Configuring
+it as a logon shell is a separate deployment step; no installer or registry
+script is included. Task Manager > Run new task > `explorer.exe` remains a
+recovery route for an explicitly configured test session.
+
+R6 also makes unselected icon labels transparent with a contrasting shadow
+over images, corrects the About copyright encoding, identifies the native
+edition, and fixes About dialog centering. The shell adapts its size to the
+monitor/work area on display changes. Full Unicode/long-path support and
+per-monitor DPI modernization remain future work; legacy Windows scaling is
+retained rather than claiming complete DPI awareness.
+
+Historical Win16 INI conversion is out of scope by project decision. Native
+R1-R3 profile migration remains supported; R4-R6 share the current format.
+
+Build each edition using the same source:
+
+```sh
+make ARCH=x64 -j4
+make ARCH=x64 VARIANT=shell -j4
+make ARCH=x86 -j4
+make ARCH=x86 VARIANT=shell -j4
+```
+
+Suggested checks: run both editions side by side, launch an application from
+the preview, check Alt+Tab and the hotkeys, exit preview and confirm Explorer
+is still present; inspect labels over your wallpaper and the About dialog.
 
 ## R5: utilities and background images
 
@@ -209,9 +267,9 @@ dependencies. Run `make clean` to remove binaries and intermediate objects.
 
 ## Boundaries
 
-- English resources only. PMTOWP, CONVINI and the old installer are not ported.
+- English resources only. PMTOWP and the old installer are not ported; historical CONVINI conversion is out of scope.
   WNDLIST, LAUNCHPD and WINSHUT have native replacements as described above.
-- This is not a registered Explorer replacement. Legacy global minimized-window management,
+- Shell registration is never changed automatically. Legacy global minimized-window management,
   Program Manager migration and WinOldApp DDE integration remain disabled.
 - A native usage guide replaces WinHelp. Complete historical help-topic conversion is not included.
 - The replacement notebook implements the shell's required message subset;

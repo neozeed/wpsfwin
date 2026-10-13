@@ -171,20 +171,19 @@ void  WPOBJECT::DrawIconResource(HDC hdc)
 //---------------------------------------------------------------------
 void WPOBJECT::DrawIconText(HDC hdc)
 {
-   int iPrevBk=TRANSPARENT;
-
-   // If object is currently selected...
-   if (isSelected()==TRUE)
-      // Set current background mode to opaque.
-      iPrevBk  = SetBkMode(hdc,OPAQUE);
-
-   // Draw title text below icon.
-   DrawText(hdc,GetTitle(),strlen(GetTitle()),&m_rcText,(DT_CENTER|DT_WORDBREAK|DT_NOCLIP|DT_NOPREFIX));
-
-   // If object is currently selected...
-   if (isSelected()==TRUE)
-      // Restore original background mode.
-      SetBkMode(hdc,iPrevBk);
+   int oldMode=SetBkMode(hdc,isSelected()?OPAQUE:TRANSPARENT);
+   // Offset shadow keeps unselected labels legible over photographs.
+   if(!isSelected() && GetParent() && (GetParent()->GetType()&OBJTYPE_FOLDER)==OBJTYPE_FOLDER &&
+      !((WPFOLDER*)GetParent())->GetImageAttribute(IMAGE_COLOR_ONLY)) {
+      COLORREF original=GetTextColor(hdc);
+      RECT shadow=m_rcText;OffsetRect(&shadow,1,1);
+      int brightness=GetRValue(original)+GetGValue(original)+GetBValue(original);
+      SetTextColor(hdc,brightness>384?RGB(0,0,0):RGB(255,255,255));
+      DrawText(hdc,GetTitle(),strlen(GetTitle()),&shadow,DT_CENTER|DT_WORDBREAK|DT_NOCLIP|DT_NOPREFIX);
+      SetTextColor(hdc,original);
+   }
+   DrawText(hdc,GetTitle(),strlen(GetTitle()),&m_rcText,DT_CENTER|DT_WORDBREAK|DT_NOCLIP|DT_NOPREFIX);
+   SetBkMode(hdc,oldMode);
 }
 
 
