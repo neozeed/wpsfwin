@@ -560,7 +560,7 @@ void WPDESKTOP::SetImagePath(char *pszImagePath)
 //---------------------------------------------------------------------
 const char *WPDESKTOP::GetCaptionTitle(void)
 {
-   return "Workplace Shell for Windows - Native Port R3";
+   return "Workplace Shell for Windows - Native Port R4";
 }
 
 //---------------------------------------------------------------------
@@ -816,8 +816,10 @@ BOOL WPDESKTOP::ReadDesktop(void)
       return (FALSE);
    }
 
+   g_portLegacyDataProfile=(wpsProfileHeader.m_dwMagicID==0x32535057UL);
+
    // Check that file is a valid Workplace Shell v1.x profile.
-   if ((wpsProfileHeader.m_dwMagicID!=0x32535057UL) ||
+   if (((wpsProfileHeader.m_dwMagicID!=0x32535057UL)&&(wpsProfileHeader.m_dwMagicID!=0x34535057UL)) ||
        (!((wpsProfileHeader.m_wMajorVersion>=0x0001) &&
          (wpsProfileHeader.m_wMinorVersion>=0x0000))))
    {
@@ -873,22 +875,26 @@ BOOL WPDESKTOP::SaveDesktop(void)
    strcat(szWindowsPath,"\\");
    strcat(szWindowsPath,GetString(IDSTR_DESKTOP_FILENAME));
 
-   // Open WPSHELL.INI file.
-   hProfile = open(szWindowsPath,_O_BINARY|_O_CREAT|_O_TRUNC|_O_RDWR,_S_IREAD|_S_IWRITE);
+   char temporary[MAX_PATH+8],backup[MAX_PATH+8];
+   snprintf(temporary,sizeof(temporary),"%s.tmp",szWindowsPath);
+   snprintf(backup,sizeof(backup),"%s.bak",szWindowsPath);
+   // Write a complete replacement before touching the current profile.
+   hProfile = open(temporary,_O_BINARY|_O_CREAT|_O_TRUNC|_O_RDWR,_S_IREAD|_S_IWRITE);
    if (hProfile==-1)
       return (FALSE);
 
    // Initialize Workplace Shell profile header information.
    // Store Workplace Shell profile magic ID number.
-   wpsProfileHeader.m_dwMagicID     = 0x32535057UL;
+   wpsProfileHeader.m_dwMagicID     = 0x34535057UL;
    wpsProfileHeader.m_wMajorVersion = VER_MAJOR;
    wpsProfileHeader.m_wMinorVersion = VER_MINOR;
    // Store file offset to begining of data.
    wpsProfileHeader.m_dwDataOffset = sizeof(WPSHELL_PROFILE_HEADER);
 
    // Write WPS profile header information.
-   if (write(hProfile,&wpsProfileHeader,sizeof(WPSHELL_PROFILE_HEADER))!=sizeof(WPSHELL_PROFILE_HEADER))
-      return (FALSE);
+   if (write(hProfile,&wpsProfileHeader,sizeof(WPSHELL_PROFILE_HEADER))!=sizeof(WPSHELL_PROFILE_HEADER)) {
+      close(hProfile);DeleteFileA(temporary);return FALSE;
+   }
 
    // Load custom "wait" cursor (i.e. clock) and set current cursor to it.
    hcurOriginal = SetCursor(LoadCursor(g_wpEnvironment.hInst,MAKEINTRESOURCE(IDC_WAITCURSOR)));
@@ -899,7 +905,7 @@ BOOL WPDESKTOP::SaveDesktop(void)
    EnumerateWPSObjects(this,&wCurrentID);
 
    // Write desktop information, children objects, and custom settings.
-   if (!WriteObjectProfile(hProfile,NULL)) { close(hProfile); PortLog("ERROR: desktop profile write failed"); return FALSE; }
+   if (!WriteObjectProfile(hProfile,NULL)) { close(hProfile);DeleteFileA(temporary);SetCursor(hcurOriginal);PortLog("ERROR: desktop profile write failed");return FALSE; }
 
    // Check if original cursor was not the same as our "wait" cursor...
    if (hcurOriginal!=GetCursor())
@@ -907,8 +913,13 @@ BOOL WPDESKTOP::SaveDesktop(void)
       DestroyCursor(SetCursor(hcurOriginal));
 
    // Close WPSHELL.INI file.
-   if (close(hProfile)==0) { PortLog("Desktop profile saved"); return (TRUE); }
-   else                    return (FALSE);
+   if(_commit(hProfile)!=0) {close(hProfile);DeleteFileA(temporary);return FALSE;}
+   if(close(hProfile)!=0) {DeleteFileA(temporary);return FALSE;}
+   if(GetFileAttributesA(szWindowsPath)!=INVALID_FILE_ATTRIBUTES && !CopyFileA(szWindowsPath,backup,FALSE)) {
+      DeleteFileA(temporary);return FALSE;
+   }
+   if(!MoveFileExA(temporary,szWindowsPath,MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH)) return FALSE;
+   PortLog("Desktop profile saved; previous profile retained as .bak");return TRUE;
 }
 
 
@@ -1201,18 +1212,11 @@ void WPDESKTOP::MenuSelection(WORD wMenuItem)
          break;
 
       case IDM_SYSTEMSETUP:
-         // Find "System Setup" folder.
-         pwpobjSystemSetup = Find(OBJTYPE_FOLDER,g_wpEnvironment.stSystem.szSystemSetupFolderName);
-         // If folder was found...
-         if (pwpobjSystemSetup!=NULL)
-         {
-            if (pwpobjSystemSetup->Open()==FALSE)
-               MessageBeep(-1);
-         }
-         else
-            // Notify user that system setup folder was not found.
-            MessageBox(NULL,GetString(IDSTR_ERR_SYSSETUP_NOT_FOUND),
-                       GetString(IDSTR_ERR_FIND_FOLDER_CAPTION),(MB_OK|MB_ICONEXCLAMATION));
+         ExecuteApplication(GetHandle(),"open","control.exe",NULL,NULL,SW_SHOWNORMAL);
+         break;
+
+      case IDM_WINDOWLIST:
+         PortShowWindows(GetHandle());
          break;
 
       case IDM_ARRANGE:
@@ -1220,6 +1224,7 @@ void WPDESKTOP::MenuSelection(WORD wMenuItem)
          break;
 
       case IDM_SAVEDESKTOP:
+         PortSaveDesktopPlacement(GetHandle());
          // Save current desktop configuration.
          if (SaveDesktop()==FALSE)
             MessageBox(NULL,GetString(IDSTR_ERR_SAVE_DSKTOP),
@@ -1493,6 +1498,7 @@ void WPDESKTOP::OnUpdateObjectMinPlacement(HINSTANCE hInstUpdate)
 void WPDESKTOP::OnNotifyObjectDestroyed(WPOBJECT *pwpobjDestroyed)
 {
    int index;
+   PortForgetProgram(pwpobjDestroyed);
 
    // Search top-level window list for object pointer match...
    for (index=0; index<m_nTopLevelWindowCount; index++)

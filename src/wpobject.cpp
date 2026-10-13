@@ -568,6 +568,7 @@ WPOBJECT::WPOBJECT(WPOBJECT *pwpobjDefaults) : m_dwType(), m_wUniqueID(), m_szTi
 //---------------------------------------------------------------------
 WPOBJECT::~WPOBJECT(void)
 {
+   PortForgetProgram(this);
    // Check if Workplace Shell desktop window exists...
    if (IsWindow(g_wpEnvironment.hwndDesktop)==TRUE)
       // Notify the Workplace Shell desktop that this object is being destroyed.
@@ -659,7 +660,7 @@ void WPOBJECT::SetTitle(const char *pszTitle)
    int index;
 
    // Store new title text in private data member.
-   strcpy(m_szTitle,pszTitle);
+   lstrcpynA(m_szTitle,pszTitle,sizeof(m_szTitle));
    // Calculate text rectangle with for new title text.
    CalcTextRect();
    // Next, calculate new text rectangle for shadow objects (if any).

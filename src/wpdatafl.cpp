@@ -295,7 +295,7 @@ void WPDATAFILE::SetDataName(const char *pszDataName)
 //---------------------------------------------------------------------
 const char *WPDATAFILE::GetFullDataPath(void)
 {
-   static char szFullDataPath[MAX_DATAFILE_PATH+MAX_DATAFILE_NAME+1];
+   static char szFullDataPath[MAX_DATAFILE_PATH+MAX_DATAFILE_NAME+2];
    char        szDataPath[MAX_DATAFILE_PATH+1];
    int         nLength;
 
@@ -949,8 +949,20 @@ BOOL WPDATAFILE::ReadObjectProfile(int hProfile,WPCONTAINER *pwpcontainerParent)
       return (FALSE);
 
    // Read datafile class information.
-   if (read(hProfile,&fdsData,sizeof(FILE_DATAFILE_STRUCT))!=sizeof(FILE_DATAFILE_STRUCT))
-      return (FALSE);
+   if(g_portLegacyDataProfile) {
+      struct { char subject[32],path[64],name[16]; } legacy;
+      if(read(hProfile,&legacy,sizeof(legacy))!=sizeof(legacy)) return FALSE;
+      legacy.subject[31]=0;legacy.path[63]=0;legacy.name[15]=0;
+      memset(&fdsData,0,sizeof(fdsData));
+      strcpy(fdsData.m_szDataSubject,legacy.subject);
+      strcpy(fdsData.m_szDataPath,legacy.path);
+      strcpy(fdsData.m_szDataName,legacy.name);
+   } else {
+      if(read(hProfile,&fdsData,sizeof(fdsData))!=sizeof(fdsData)) return FALSE;
+      fdsData.m_szDataSubject[MAX_DATAFILE_SUBJECT]=0;
+      fdsData.m_szDataPath[MAX_DATAFILE_PATH]=0;
+      fdsData.m_szDataName[MAX_DATAFILE_NAME]=0;
+   }
 
    // Initialize datafile object values using data values read from profile.
    SetDataSubject(fdsData.m_szDataSubject);

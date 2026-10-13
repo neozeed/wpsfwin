@@ -2528,80 +2528,31 @@ BOOL WPFOLDER::Win31DDDragSelect(BOOL fEnteringWindow,LPWPDRAGINFO pDragInfo)
 //---------------------------------------------------------------------
 LRESULT WPFOLDER::Win31DDDropFiles(HDROP hDrop)
 {
-   POINT          ptDrop;
-   WORD           wSize;
-   HCURSOR        hcurOriginal;
-   int            nFilesDropped;
-   char           *pszPathName;
-   struct _stat   FileStats;
-
-   // If this folder does not have a target framed, return.
-   if (m_pwpobjDropTarget==NULL)
-   {
-      // Free the memory block containing the pathnames
+   // Modern Explorer sends WM_DROPFILES without the Win16 drag negotiation.
+   // Import references into virtual containers, never silently copy/move files.
+   if(GetType()!=OBJTYPE_FOLDER && GetType()!=OBJTYPE_DESKTOP) {
       DragFinish(hDrop);
-      // Return from function.
-      return (NULL);
+      MessageBoxA(GetHandle(),"Drop files onto the desktop or a virtual folder to create objects.","Import objects",MB_OK|MB_ICONINFORMATION);
+      return 0;
    }
-
-   // Unframe current drop target.
-   m_pwpobjDropTarget->UnFrame(m_fTargetIsFolderArea);
-
-   // Get drop (x,y) position where files were dropped (in client coord).
-   DragQueryPoint(hDrop,&ptDrop);
-   // If object receiving files dropped is this folder, then...
-   if (m_pwpobjDropTarget==this)
-      // Convert client point (or window point) to logical point.
-      WPtoLP(&ptDrop);
-   else
-   {
-      // Else, drop point becomes a "don't care" since object receiving
-      // drop is not this folder but one of the child objects in the folder.
-      ptDrop.x = -1;
-      ptDrop.y = -1;
+   POINT point; DragQueryPoint(hDrop,&point); WPtoLP(&point);
+   m_pwpobjDropTarget=this;
+   UINT count=DragQueryFileA(hDrop,0xffffffff,NULL,0),skipped=0;
+   for(UINT i=0;i<count;++i) {
+      UINT length=DragQueryFileA(hDrop,i,NULL,0);
+      if(length>MAX_PATH_FILENAME) {++skipped;continue;}
+      char path[MAX_PATH_FILENAME+1];
+      DragQueryFileA(hDrop,i,path,sizeof(path));
+      DWORD attr=GetFileAttributesA(path);
+      if(attr==INVALID_FILE_ATTRIBUTES) {++skipped;continue;}
+      Win31DDCreateWPSObjectFromFileDropped((attr&FILE_ATTRIBUTE_DIRECTORY)?_S_IFDIR:0,path,point);
+      point.x+=24;point.y+=24;
    }
-   
-   // Load custom "wait" cursor (i.e. clock) and set current cursor to it.
-   hcurOriginal = SetCursor(LoadCursor(g_wpEnvironment.hInst,MAKEINTRESOURCE(IDC_WAITCURSOR)));
-   
-   // Get the number of pathnames that are being dropped on us.
-   nFilesDropped = (int)DragQueryFile(hDrop,-1,NULL,0);
-   // While we have more files to process...
-   while ((nFilesDropped-- > 0) && (m_pwpobjDropTarget!=NULL))
-   {
-      // Get the length of the the pathname.
-      wSize = (WORD)DragQueryFile(hDrop,(UINT)nFilesDropped,NULL,0) + 1;
-      // Allocate a block of memory large enough for the pathname.
-      pszPathName = (char *)malloc((size_t)wSize);
-      // Check if out of memory.
-      if (pszPathName == NULL)
-         continue;
-      // Copy the pathname into our local buffer
-      DragQueryFile(hDrop,nFilesDropped,pszPathName,wSize);
-
-      // Get file status to help decide which Workplace Shell object to create...
-      if (_stat(pszPathName,&FileStats)==0)
-         // Create Workplace Shell object from file/directory dropped.
-         Win31DDCreateWPSObjectFromFileDropped(FileStats.st_mode,pszPathName,ptDrop);
-
-      // Free memory allocated for file name.
-      free(pszPathName);
-   }
-   // Free the memory block containing the pathnames
-   DragFinish(hDrop);
-   // Update the visual apperance of folder.
-   m_pwpobjDropTarget->Invalidate(TRUE,TRUE);
-   // Set current drop target to "none".
-   m_pwpobjDropTarget = NULL;
-                           
-   // Check if original cursor was not the same as our "wait" cursor...      
-   if (hcurOriginal!=GetCursor())
-      // Restore original cursor and destroy custom wait cursor.
-      DestroyCursor(SetCursor(hcurOriginal));
-   
-   // Return from function.
-   return (NULL);
+   DragFinish(hDrop);m_pwpobjDropTarget=NULL;Invalidate(TRUE,TRUE);
+   if(skipped) MessageBoxA(GetHandle(),"Some paths were unavailable or exceeded the supported path length.","Import objects",MB_OK|MB_ICONINFORMATION);
+   return 0;
 }
+
 
 //---------------------------------------------------------------------
 // Win31DDCreateWPSObjectFromFileDropped():
@@ -2623,7 +2574,9 @@ void WPFOLDER::Win31DDCreateWPSObjectFromFileDropped(WORD wFileFlags,char *pszPa
    if (wFileFlags&_S_IFDIR)
    {
       // Create Workplace Shell folder since path is a directory name.
-      pwpfolderNew = new WPFOLDER;
+      WPDIRECTORY* directory = new WPDIRECTORY;
+      directory->SetPath(pszPathName);
+      pwpfolderNew = directory;
       // Cast new pointer to folder object to generic object.
       pwpobjNew = (WPOBJECT *)pwpfolderNew;
    }
@@ -2631,7 +2584,7 @@ void WPFOLDER::Win31DDCreateWPSObjectFromFileDropped(WORD wFileFlags,char *pszPa
    else
    {
       // If execute bits are set, file is a "program" file...
-      if ((wFileFlags&_S_IEXEC)||(stricmp(szExt,".PIF")==0))
+      if (PortIsProgramPath(pszPathName))
       {
          // Create Workplace Shell program object.
          pwpprogNew = new WPPROGRAM;
@@ -2673,11 +2626,9 @@ void WPFOLDER::Win31DDCreateWPSObjectFromFileDropped(WORD wFileFlags,char *pszPa
          pwpobjNew = (WPOBJECT *)pwpdatafileNew;
       }
    }
-   // Get file name only (no extension or directory path).
-   _makepath(szString,NULL,NULL,szFName,NULL);
-   // Set title for new object (first letter upper case, rest lower case).
-   strlwr(szString);
-   szString[0] = (char)toupper(szString[0]);
+   _makepath(szString,NULL,NULL,szFName,szExt);
+   if(!szString[0]) lstrcpynA(szString,pszPathName,sizeof(szString));
+   szString[MAX_TITLE_NAME]=0;
    pwpobjNew->SetTitle(szString);
    // Get new location for object.
    pwpobjNew->SetIconPos(((WPFOLDER *)m_pwpobjDropTarget)->GetFirstAvailableIconPos(&ptDrop));

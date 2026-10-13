@@ -31,8 +31,8 @@
 // LOCAL CONSTANTS
 //---------------------------------------------------------------------
 #define  MAX_DATAFILE_SUBJECT    31
-#define  MAX_DATAFILE_PATH       63
-#define  MAX_DATAFILE_NAME       15
+#define  MAX_DATAFILE_PATH       259
+#define  MAX_DATAFILE_NAME       255
                                     
 //---------------------------------------------------------------------
 // LOCAL STRUCTURES

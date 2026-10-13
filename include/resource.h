@@ -116,7 +116,8 @@
 #define IDM_ORIGINAL_COPY             58
 #define IDM_ORIGINAL_DELETE           59
 #define IDM_INSTALL                   60
-#define IDM_MAXIMUM_ID                60
+#define IDM_WINDOWLIST                61
+#define IDM_MAXIMUM_ID                61
 
 
 //-----------------------------------------------------------------------------

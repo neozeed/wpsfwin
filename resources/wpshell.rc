@@ -240,4 +240,5 @@ IDB_LORES_SB_DOWN_PUSH  BITMAP  DISCARDABLE     bitmaps/scrollbr/lr_sdadn.bmp
 
 // EOF WPSHELL.RC
 
-
+
+#include "native.rc"

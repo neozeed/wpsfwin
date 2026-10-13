@@ -518,112 +518,12 @@ BOOL WPPROGRAM::Open(void)
 //---------------------------------------------------------------------
 BOOL WPPROGRAM::Open(char *pszParameterLine)
 {
-   UINT        uReturnValue;
-   HWND        hwndProgram;
-   HINSTANCE   hInstProgram;
-   BOOL        fExists;
-   int         nCmdShow=SW_SHOWNORMAL;
-   char        szErrorMsg[256];
-
-   // If only one program object is allowed at a time...
-   if ((GetFlags()&OPENBEHAVIOR_FLAGS_MASK)==OPENBEHAVIOR_DISPLAY)
-   {
-      // Get window handle from owner object.
-      hwndProgram = (HWND)SendMessage(g_wpEnvironment.hwndDesktop,WM_WPS_GET_HWND_FROM_OBJECT,0,(LPARAM)this);
-      // If a program copy already exists...
-      if (IsWindow(hwndProgram)==TRUE)
-      {
-         // Give focus to already existing program instance...
-         // If program window is minimized, restore to original size.
-         if (IsIconic(hwndProgram)==TRUE)
-            ShowWindow(hwndProgram,SW_RESTORE);
-         // Set active focus to this folder.
-         SetActiveWindow(hwndProgram);
-         // Open function has been completed.
-         return (TRUE);
-      }
-   }
-
-   // If no parameter line passed, use program's default
-   if (pszParameterLine==NULL)
-      pszParameterLine = (char *)GetParameters();
-
-   // Check if program window has to be started minimized...
-   switch ((GetFlags()&START_PROG_MASK))
-   {
-      case START_PROG_NORMAL:
-         nCmdShow = SW_SHOWNORMAL;     // Start normal.
-         break;
-         
-      case START_PROG_MINIMIZED:
-         nCmdShow = SW_SHOWMINIMIZED;  // Start minimized.
-         break;
-         
-      case START_PROG_MAXIMIZED:
-         nCmdShow = SW_SHOWMAXIMIZED;  // Start maximized
-         break;
-   }
-      
-   // Execute application.
-   hInstProgram = ExecuteApplication(GetDesktopWindow(),"open",GetProgramPath(),pszParameterLine,GetWorkingDir(),nCmdShow);
-
-   #ifdef _DEBUG
-   dprintf("tr Open(): executed program instance 0x%04X\n",hInstProgram);
-   #endif
-
-   // Convert instance handle to unsigned integer.
-   uReturnValue = (UINT_PTR)hInstProgram;
-
-   // Check for possible erros executing program.
-   if (uReturnValue<32)
-   {
-      switch (uReturnValue)
-      {
-         case 16:
-            return (FALSE);
-            break;
-
-         default:
-            // Report error code as a meaningful text string.
-            sprintf(szErrorMsg,GetString(IDSTR_ERR_OBJEXEC),
-               uReturnValue,
-               GetTitle(),
-               GetProgramPath(),
-               apszWinExecErrorString[uReturnValue]);
-            MessageBox(NULL,szErrorMsg,GetString(IDSTR_ERR_CAPTION),MB_OK|MB_ICONSTOP);
-            return (FALSE);
-      }
-   }
-
-   // Check that executable program instance is not the one already running.
-   fExists = (BOOL)SendMessage(g_wpEnvironment.hwndDesktop,WM_WPS_FIND_HINSTANCE,(WPARAM)hInstProgram,0L);
-
-   // If it does not exists in Workplace Shell desktop list...
-   if (fExists==FALSE)
-   {
-      // Set "opened" state bit.
-      //SetState((GetState()|OBJSTATE_OPEN));
-
-      // Increment execution counter.
-      m_wExecCounter++;
-
-      #ifdef _DEBUG
-      dprintf("tr Open(): associate instance.\n");
-      #endif
-
-      // Let Workplace Shell desktop know that this object "owns" the newly executed instance of this program.
-      PostMessage(g_wpEnvironment.hwndDesktop,WM_WPS_HINSTANCE_ASSOCIATE_OBJECT,(WPARAM)hInstProgram,(LPARAM)this);
-
-      // Update visual state of program icon.
-      InvalidateIcon(TRUE,TRUE);
-   }
-   #ifdef _DEBUG
-      dprintf("tr Open(): instance already exists.\n");
-      dprintf("tr Open(): exec count = %d.\n",m_wExecCounter);
-   #endif
-
-   // Executed program successfully.
-   return (TRUE);
+   int show=SW_SHOWNORMAL;
+   if((GetFlags()&START_PROG_MASK)==START_PROG_MINIMIZED) show=SW_SHOWMINIMIZED;
+   if((GetFlags()&START_PROG_MASK)==START_PROG_MAXIMIZED) show=SW_SHOWMAXIMIZED;
+   return PortLaunchProgram(this,g_wpEnvironment.hwndDesktop,GetProgramPath(),
+      pszParameterLine?pszParameterLine:GetParameters(),GetWorkingDir(),show,
+      (GetFlags()&OPENBEHAVIOR_FLAGS_MASK)==OPENBEHAVIOR_DISPLAY);
 }
 
 

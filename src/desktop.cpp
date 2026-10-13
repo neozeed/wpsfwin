@@ -198,7 +198,10 @@ LRESULT WPDESKTOP::ClientWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lPa
             case IDYES:                      
                // Save desktop state.             
                PortSaveDesktopPlacement(hWnd);
-               SaveDesktop();   
+               if(!SaveDesktop()) {
+                  MessageBoxA(hWnd,"The desktop could not be saved. The previous profile was preserved.","Save desktop",MB_OK|MB_ICONERROR);
+                  return 0;
+               }   
                break;                
                
             case IDCANCEL:

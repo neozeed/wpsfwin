@@ -1,12 +1,51 @@
-# Workplace Shell for Windows — native port R3
+# Workplace Shell for Windows — native port R4
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
 folder, drawing, drag/drop, template and settings code.
 
-**Status: R2 is live-proven on the user's Windows machine, including the
-background, drive labels and original animations. R3 compiles for x86/x64;
-its new Windows interactions still need a live check.**
+**Status: R3 is confirmed working by the user. R4 builds for x86/x64;
+its new Windows interactions and profile migration need live testing.**
+
+## R4 features
+
+- Explorer file drops now work without Win16 drag negotiation. Drop onto the
+  desktop or a virtual folder to create references. Directory drops create
+  actual directory objects, rather than empty virtual folders. Imported names
+  retain case and extension. Physical directory windows reject this import.
+- Program objects use ShellExecuteEx and process handles for the existing
+  'display existing instance' setting, with environment-variable expansion,
+  working directories, startup state and native error messages. Applications
+  that hand off to another process may not be reusable through this tracking.
+- Desktop **Window list** lists visible windows and switches to the selected
+  one, restoring minimized windows. Refresh rebuilds the list.
+- **System setup** opens Windows Control Panel.
+- Help menus and F1 open a built-in, scrollable usage guide. It replaces the
+  WinHelp dependency; it is not a full conversion of the original help book.
+- Data objects support 255-character filenames and 259-character directory
+  fields. Full paths are still limited by the application's ANSI/MAX_PATH
+  design. Program detection checks the actual extension and includes `.cmd`.
+- Desktop saves use a temporary file, flush it, retain the previous profile
+  as `wpshell32.dat.bak`, then replace the active profile. Failed exit saves
+  keep the application open. Explicit Save Desktop also records placement.
+
+### Upgrade and rollback
+
+Close R3 and keep a separate copy of its EXE/DLL and `wpshell32.dat` before
+upgrading. Replace the EXE and DLL together. R4 reads R1-R3 profiles, but writes
+an expanded R4 profile format. Older builds cannot read the new format.
+The `.bak` file holds only the immediately preceding save, so retain your
+separate R3 copy for rollback. Keep `wpsettings.ini` as before.
+
+### Suggested R4 checks
+
+1. Drop a disposable directory and a text file with a filename longer than
+   15 characters from Explorer onto the desktop. Open both, save, and reopen.
+2. Open a Program object twice with 'display existing instance' enabled,
+   close the program, then open it again. Also try a spaced path and `.cmd`.
+3. Open Window list, switch to a minimized window, then refresh after closing
+   another application. Try System setup and Help/F1.
+4. Verify your previous folders, shadows and preferences survive migration.
 
 ## R3 features
 
@@ -39,9 +78,7 @@ reset window placement while retaining other settings.
   instead of the old transparent Win16 desktop override. Scaled bitmap
   backgrounds are also enabled.
 
-R1/R2 profiles remain compatible. Close the old version and replace the EXE and matching
-resource DLL with R3 from the same architecture; keep your existing
-`wpshell32.dat` and `wpsettings.ini`. Drive titles refresh when the profile loads.
+Drive titles refresh when the profile loads. See the R4 upgrade instructions above.
 
 ## Try it
 
@@ -131,9 +168,9 @@ dependencies. Run `make clean` to remove binaries and intermediate objects.
 
 - English resources only. The remaining languages and support utilities
   (PMTOWP, CONVINI, WNDLIST, LAUNCHPD, WINSHUT and the old installer) are not ported.
-- This is not a registered Explorer replacement. Cross-process task tracking,
-  Program Manager migration and legacy WinOldApp DDE integration are disabled.
-- Original WinHelp calls remain; modern help conversion is not included.
+- This is not a registered Explorer replacement. Legacy global minimized-window management,
+  Program Manager migration and WinOldApp DDE integration remain disabled.
+- A native usage guide replaces WinHelp. Complete historical help-topic conversion is not included.
 - The replacement notebook implements the shell's required message subset;
   visual fidelity, keyboard navigation and layout need Windows testing.
 - ANSI/MAX_PATH-era paths remain. Full Unicode, long-path support and high-DPI

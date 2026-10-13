@@ -55,6 +55,17 @@ inline LRESULT PortCaptionHitTest(HWND window, WPARAM wp, LPARAM lp) {
 INT_PTR CALLBACK PortRunDialog(HWND,UINT,WPARAM,LPARAM);
 void PortSaveDesktopPlacement(HWND);
 void PortRestoreDesktopPlacement(HWND);
+BOOL PortLaunchProgram(void*,HWND,const char*,const char*,const char*,int,BOOL);
+void PortForgetProgram(void*);
+void PortShowWindows(HWND);
+BOOL PortWinHelp(HWND,LPCSTR,UINT,ULONG_PTR);
+#undef WinHelp
+#define WinHelp PortWinHelp
+inline BOOL PortIsProgramPath(const char* path) {
+ const char* ext=strrchr(path,'.');
+ return ext && (!stricmp(ext,".exe") || !stricmp(ext,".com") || !stricmp(ext,".bat") || !stricmp(ext,".cmd") || !stricmp(ext,".pif"));
+}
+extern BOOL g_portLegacyDataProfile;
 void PortStartDiagnostics();
 void PortLog(const char*);
 BOOL PortRegisterControls(HINSTANCE);

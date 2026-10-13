@@ -88,11 +88,7 @@ WPOBJECT *WPDIRECTORY::CreateObjectFromFileStructure(struct _find_t *pFile)
       default:
          // "File" is not a subdirectory,...
          // Check whether file found is an executable program or a data file...
-         if ((stristr(pFile->name,".EXE")!=NULL)||(stristr(pFile->name,".COM")!=NULL)||
-             (stristr(pFile->name,".BAT")!=NULL)||(stristr(pFile->name,".PIF")!=NULL))
-            fExecutable = TRUE;
-         else
-            fExecutable = FALSE;
+         fExecutable = PortIsProgramPath(pFile->name);
          // If file is an executable program...
          if (fExecutable==TRUE)
          {

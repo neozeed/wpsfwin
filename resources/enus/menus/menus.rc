@@ -70,6 +70,7 @@ DesktopPopUpMenu MENU
       MENUITEM "Sa&ve desktop"              , IDM_SAVEDESKTOP
       MENUITEM SEPARATOR
       MENUITEM "R&un..."                    , IDM_RUN
+      MENUITEM "&Window list..."            , IDM_WINDOWLIST
    }
 }
 

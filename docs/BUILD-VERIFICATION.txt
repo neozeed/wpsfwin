@@ -1,17 +1,16 @@
-WPSFWIN native port R3 - build verification
+WPSFWIN native port R4 - build verification
 2026-10-13; MinGW-w64 GCC 13.2.0; GNU make.
 x86 and x64 builds passed configured compiler error gates.
-Run command parser: 12 host-executed C++98 cases passed.
 
-x86 imports: ADVAPI32.dll, COMCTL32.dll, COMDLG32.DLL, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.DLL
-x86/wpshell.exe: PE and resources PASS; SHA256 7658e7b1a37c7f56fe318f0de987ac4f4f0315cbeafe3abd0d916e676e1101a7
-x86/WPS_ENUS.DLL: PE and resources PASS; SHA256 e610c7be256a1647db355fc0a8c559b5494f8fdd576af1005f8990f001ef9ac3
-x64 imports: ADVAPI32.dll, COMCTL32.dll, comdlg32.dll, GDI32.dll, KERNEL32.dll, msvcrt.dll, SHELL32.dll, USER32.dll, WINMM.dll
-x64/wpshell.exe: PE and resources PASS; SHA256 599755254e9b0587325d477391d2e75b1a4c6bc4ec60ea90ce498ae4a70ef6b2
-x64/WPS_ENUS.DLL: PE and resources PASS; SHA256 f8c2eacd37e85cf720f4fe658d3d6b48a6648a7af406ea3b2c5d4beeeea428db
+x86 GUI PE PASS; native launch/task/profile imports present; no WinHelp import.
+x86/wpshell.exe: resources PASS; SHA256 05baba3f0e5b7cfbd7245d125803bf0441623c47c89ff16aa5db3f92ee07e13b
+x86/WPS_ENUS.DLL: resources PASS; SHA256 090f845d0e04b5ace3fe5b09e3d3275f9bf58df972ef1704328075e6faccf826
+x64 GUI PE PASS; native launch/task/profile imports present; no WinHelp import.
+x64/wpshell.exe: resources PASS; SHA256 62054556902fecb77db922e91ca566fc3af53f7cef932e79e5e7a477680dc418
+x64/WPS_ENUS.DLL: resources PASS; SHA256 5733aded5a0af7647a88a6cd307018cd9fa6048a118868b4309405b248c04897
 
-R2 live: user confirmed appearance and animations; screenshots show background and labelled drives.
-R3 Windows runtime: not tested here. Wine is blocked by the environment local-socket restriction.
-Live checks: Run browse/quoted paths, environment variables, history, failures, documents/URLs;
-resize/maximize and reopen; save-disabled exit; monitor removal.
-Command parser test: g++ -std=c++98 tests/run_command_test.cpp -o /tmp/wps-run-test && /tmp/wps-run-test
+R3 live: user confirmed working.
+R4 runtime and migration: NOT VERIFIED; Wine remains blocked by local-socket restriction.
+Required Windows checks are in README: Explorer drop, real directory opening, long data filename,
+legacy profile read/new profile reopen, program reuse, window switching, help, setup, failed-save handling.
+The native usage guide is new content, not a conversion of the original WinHelp book.
