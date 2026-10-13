@@ -1,4 +1,4 @@
-# Workplace Shell for Windows â€” Native Port
+# Workplace Shell for Windows — Native Port
 
 IBM's Workplace Shell, rescued from Windows 3.1 and rebuilt as a native
 32-bit and 64-bit Windows application.
@@ -169,12 +169,12 @@ ANSI/MAX_PATH design.
 
 The desktop **Utilities** menu launches three native replacements:
 
-### Window List â€” WNDLIST.EXE
+### Window List — WNDLIST.EXE
 
 Lists visible top-level windows. Selecting a minimized window restores it and
 brings it forward.
 
-### LaunchPad â€” LAUNCHPD.EXE
+### LaunchPad — LAUNCHPD.EXE
 
 Maintains a persistent list of up to 32 programs, shortcuts, documents and
 folders. Add entries with Browse or drop them from Explorer. The list is stored
@@ -183,7 +183,7 @@ in <code>launchpad.ini</code> beside the utility.
 For arguments or a custom working directory, create a normal Windows shortcut
 with those properties and add the shortcut to LaunchPad.
 
-### Windows Shutdown â€” WINSHUT.EXE
+### Windows Shutdown — WINSHUT.EXE
 
 Provides lock, sign-out, restart and power-off commands. It defaults to the
 non-destructive Lock action and asks for confirmation. It does not force-close
@@ -202,7 +202,7 @@ Runtime state is stored beside each executable:
 | <code>wpsettings.ini</code> | Preferences, Run history and window placement |
 | <code>wpshell-port.log</code> | Most recent startup/crash diagnostic log |
 
-R4 through R6b use the current profile format. R4 can migrate native R1â€“R3
+R4 through R6b use the current profile format. R4 can migrate native R1–R3
 profiles, but once saved in the expanded format those older builds cannot read
 them. Keep a separate backup before upgrading.
 
@@ -290,7 +290,7 @@ and the unused modern caption region remains draggable.
 - no legacy global minimized-window manager or WinOldApp integration
 - original Program Manager/SHELL DDE compatibility services remain disabled
 - applications that immediately hand off to another process may not cooperate
-  with â€œdisplay existing instanceâ€ tracking
+  with “display existing instance” tracking
 
 <code>PMTOWP.EXE</code> and <code>CONVINI.EXE</code> are not ported. Their
 purpose and binary layouts belong to Windows 3.1 and do not apply safely to
