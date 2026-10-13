@@ -24,10 +24,19 @@ $(OBJ)/enus.res.o: resources/enus/wps_enus.rc $(shell find resources/enus -type 
 	cd resources/enus && $(WINDRES) -I../../include -I.. wps_enus.rc ../../$@
 $(OUT)/wpshell.exe: $(OBJECTS) $(OBJ)/shell.res.o
 	@mkdir -p $(OUT)
-	$(CXX) -mwindows -static -Wl,-Map,$(OUT)/wpshell.map -o $@ $^ -lcomdlg32 -lwinmm -lshell32 -lgdi32 -luser32 -ladvapi32 -lcomctl32
+	$(CXX) -mwindows -static -Wl,-Map,$(OUT)/wpshell.map -o $@ $^ -lcomdlg32 -lwinmm -lshell32 -lgdi32 -luser32 -ladvapi32 -lcomctl32 -lgdiplus -lole32
 $(OUT)/WPS_ENUS.DLL: $(OBJ)/enus.res.o
 	@mkdir -p $(OUT)
 	$(CXX) -shared -nostdlib -Wl,--entry,0 -o $@ $<
 clean:
 	rm -rf build bin
 .PHONY: all clean
+
+all: $(OUT)/WNDLIST.EXE $(OUT)/LAUNCHPD.EXE $(OUT)/WINSHUT.EXE
+$(OBJ)/utilities.res.o: utilities/utilities.rc resources/native.rc
+	@mkdir -p $(OBJ)
+	$(WINDRES) utilities/utilities.rc $@
+$(OUT)/LAUNCHPD.EXE: utilities/utilities.cpp $(OBJ)/utilities.res.o $(OBJ)/port/native_shell.o $(OBJ)/port/compat.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -mwindows -static -o $@ $^ -lcomdlg32 -lshell32 -lgdi32 -luser32 -ladvapi32
+$(OUT)/WNDLIST.EXE $(OUT)/WINSHUT.EXE: $(OUT)/LAUNCHPD.EXE
+	cp $< $@

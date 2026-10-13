@@ -230,32 +230,12 @@ void WPFOLDER::PaintFolderImage(HDC hdc)
 // ReloadFolderImage():
 //---------------------------------------------------------------------
 void WPFOLDER::ReloadFolderImage(void)
-{        
-   HPBYTE   lpDIBMem;
-
-   // Check if folder is NOT the desktop AND it is currently open, then...
-   if ((GetType()!=OBJTYPE_DESKTOP)&&(isOpen()==TRUE))
-   {
-      // First, destroy original image bitmap (if any).
-      ::DeleteObject(GetImageBitmapHandle());           
-      // Clear image bitmap handle.
-      SetImageBitmapHandle(NULL);
-      // Second, destroy original logical palette (if any).
-      ::DeleteObject(GetImagePalette());           
-      // Clear image palette handle.
-      SetImagePalette(NULL);
-      // Check if folder has an image as background...
-      if (GetImageAttribute(IMAGE_COLOR_ONLY)==FALSE)
-      {
-         // Load new image bitmap into memory.
-         lpDIBMem = LoadImage(GetImagePath());
-         // Create logical palette from DIB information.
-         SetImagePalette(CreatePaletteFromDIB(lpDIBMem));
-         // Convert DIB image to regular bitmap object (store bitmap handle internally).
-         SetImageBitmapHandle(ConvertDIBToDDB(lpDIBMem,GetImagePalette()));
-         // Destroy memory image of bitmap.
-         DestroyImage(lpDIBMem);
-      }
+{
+   if(isOpen()) {
+      ::DeleteObject(GetImageBitmapHandle());SetImageBitmapHandle(NULL);
+      ::DeleteObject(GetImagePalette());SetImagePalette(NULL);
+      if(!GetImageAttribute(IMAGE_COLOR_ONLY))
+         SetImageBitmapHandle(PortLoadBackground(GetImagePath()));
    }
 }
 

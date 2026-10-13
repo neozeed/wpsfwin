@@ -117,7 +117,9 @@
 #define IDM_ORIGINAL_DELETE           59
 #define IDM_INSTALL                   60
 #define IDM_WINDOWLIST                61
-#define IDM_MAXIMUM_ID                61
+#define IDM_LAUNCHPAD                 62
+#define IDM_WINSHUT                   63
+#define IDM_MAXIMUM_ID                63
 
 
 //-----------------------------------------------------------------------------

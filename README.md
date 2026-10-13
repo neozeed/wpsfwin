@@ -1,11 +1,54 @@
-# Workplace Shell for Windows — native port R4
+# Workplace Shell for Windows — native port R5
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
 folder, drawing, drag/drop, template and settings code.
 
-**Status: R3 is confirmed working by the user. R4 builds for x86/x64;
-its new Windows interactions and profile migration need live testing.**
+**Status: R3 is confirmed working by the user. R5 and all three native
+utilities compile for x86/x64; their new Windows interactions need live testing.**
+
+## R5: utilities and background images
+
+Right-click the desktop, open **Settings**, then the **Background** page.
+Click **Browse...** and select a BMP, PNG or JPEG. Browse turns off Color only.
+Choose **Normal** (centered at original size), **Tiled**, or **Scaled** (stretch
+across the window). The preview and desktop update immediately. Save the
+desktop to retain the path and mode. Keep the image at that path; it is not
+embedded in the profile. This changes the Workplace Shell window background,
+not the Windows host wallpaper. Images above 64 million pixels are rejected;
+transparent images are flattened onto white. ANSI/MAX_PATH limits still apply.
+
+The desktop image reload code previously excluded the desktop itself; this
+is corrected. The old Windows-directory-only picker is replaced with Browse.
+Folder background pages use the same image loader.
+
+The desktop **Utilities** submenu provides:
+
+- **Window list**: switch to a visible window, restoring it if minimized.
+  The same list is available independently as `WNDLIST.EXE`.
+- **LaunchPad** (`LAUNCHPD.EXE`): a persistent list of up to 32 programs,
+  Windows shortcuts, documents and folders. Add files with Browse or drop
+  items from Explorer. Double-click or Launch opens them. Remove removes
+  only the list entry. Paths are saved in `launchpad.ini` beside the utility.
+  For arguments/working directories, add a Windows shortcut configured with
+  those properties. This is a native list-based replacement, not a faithful
+  reproduction of the unfinished original LaunchPad UI or its WPS protocol.
+- **Windows shutdown** (`WINSHUT.EXE`): lock, sign out, restart or power off.
+  It defaults to Lock, then asks for explicit confirmation. No force-close
+  flags are used. These actions affect Windows, not just Workplace Shell.
+
+Keep the utility filenames as supplied: they share a native implementation
+that selects its interface from its executable name. Copy all three EXEs
+beside the matching shell EXE when upgrading. They do not need WPS_ENUS.DLL.
+
+PMTOWP (Program Manager/DDE import) and CONVINI (historical v0.5 profile
+conversion) are **not ported**. Their source assumes Win16 data layouts and
+is not a valid converter for native profiles. R1-R3 native profile migration
+continues to be handled by R4/R5. The original installer is also not ported.
+
+Suggested checks: choose a PNG/JPEG in a directory with spaces, switch all
+three image modes, then save/reopen; add and remove a LaunchPad entry and
+reopen it; run WNDLIST standalone; inspect WINSHUT and cancel it.
 
 ## R4 features
 
@@ -31,7 +74,7 @@ its new Windows interactions and profile migration need live testing.**
 
 ### Upgrade and rollback
 
-Close R3 and keep a separate copy of its EXE/DLL and `wpshell32.dat` before
+Keep a separate copy of your previous EXE/DLL and `wpshell32.dat` before
 upgrading. Replace the EXE and DLL together. R4 reads R1-R3 profiles, but writes
 an expanded R4 profile format. Older builds cannot read the new format.
 The `.bak` file holds only the immediately preceding save, so retain your
@@ -166,8 +209,8 @@ dependencies. Run `make clean` to remove binaries and intermediate objects.
 
 ## Boundaries
 
-- English resources only. The remaining languages and support utilities
-  (PMTOWP, CONVINI, WNDLIST, LAUNCHPD, WINSHUT and the old installer) are not ported.
+- English resources only. PMTOWP, CONVINI and the old installer are not ported.
+  WNDLIST, LAUNCHPD and WINSHUT have native replacements as described above.
 - This is not a registered Explorer replacement. Legacy global minimized-window management,
   Program Manager migration and WinOldApp DDE integration remain disabled.
 - A native usage guide replaces WinHelp. Complete historical help-topic conversion is not included.

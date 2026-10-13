@@ -560,7 +560,7 @@ void WPDESKTOP::SetImagePath(char *pszImagePath)
 //---------------------------------------------------------------------
 const char *WPDESKTOP::GetCaptionTitle(void)
 {
-   return "Workplace Shell for Windows - Native Port R4";
+   return "Workplace Shell for Windows - Native Port R5";
 }
 
 //---------------------------------------------------------------------
@@ -1215,6 +1215,15 @@ void WPDESKTOP::MenuSelection(WORD wMenuItem)
          ExecuteApplication(GetHandle(),"open","control.exe",NULL,NULL,SW_SHOWNORMAL);
          break;
 
+      case IDM_LAUNCHPAD:
+      case IDM_WINSHUT: {
+         char path[MAX_PATH];
+         if(PortGetAppDirectory(path,MAX_PATH-20)) {
+            strcat(path,wMenuItem==IDM_LAUNCHPAD?"\\LAUNCHPD.EXE":"\\WINSHUT.EXE");
+            ExecuteApplication(GetHandle(),"open",path,NULL,NULL,SW_SHOWNORMAL);
+         }
+         break;
+      }
       case IDM_WINDOWLIST:
          PortShowWindows(GetHandle());
          break;

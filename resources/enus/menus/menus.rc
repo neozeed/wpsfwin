@@ -70,7 +70,12 @@ DesktopPopUpMenu MENU
       MENUITEM "Sa&ve desktop"              , IDM_SAVEDESKTOP
       MENUITEM SEPARATOR
       MENUITEM "R&un..."                    , IDM_RUN
-      MENUITEM "&Window list..."            , IDM_WINDOWLIST
+      POPUP "Utilities"
+      {
+         MENUITEM "Window list...", IDM_WINDOWLIST
+         MENUITEM "LaunchPad...", IDM_LAUNCHPAD
+         MENUITEM "Windows shutdown...", IDM_WINSHUT
+      }
    }
 }
 

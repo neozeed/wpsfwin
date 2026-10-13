@@ -66,6 +66,8 @@ inline BOOL PortIsProgramPath(const char* path) {
  return ext && (!stricmp(ext,".exe") || !stricmp(ext,".com") || !stricmp(ext,".bat") || !stricmp(ext,".cmd") || !stricmp(ext,".pif"));
 }
 extern BOOL g_portLegacyDataProfile;
+HBITMAP PortLoadBackground(const char*);
+BOOL PortBrowseBackground(HWND,char*,UINT);
 void PortStartDiagnostics();
 void PortLog(const char*);
 BOOL PortRegisterControls(HINSTANCE);

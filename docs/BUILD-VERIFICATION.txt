@@ -1,16 +1,21 @@
-WPSFWIN native port R4 - build verification
+WPSFWIN native port R5 - build verification
 2026-10-13; MinGW-w64 GCC 13.2.0; GNU make.
-x86 and x64 builds passed configured compiler error gates.
+Both architecture builds passed configured error gates.
 
-x86 GUI PE PASS; native launch/task/profile imports present; no WinHelp import.
-x86/wpshell.exe: resources PASS; SHA256 05baba3f0e5b7cfbd7245d125803bf0441623c47c89ff16aa5db3f92ee07e13b
-x86/WPS_ENUS.DLL: resources PASS; SHA256 090f845d0e04b5ace3fe5b09e3d3275f9bf58df972ef1704328075e6faccf826
-x64 GUI PE PASS; native launch/task/profile imports present; no WinHelp import.
-x64/wpshell.exe: resources PASS; SHA256 62054556902fecb77db922e91ca566fc3af53f7cef932e79e5e7a477680dc418
-x64/WPS_ENUS.DLL: resources PASS; SHA256 5733aded5a0af7647a88a6cd307018cd9fa6048a118868b4309405b248c04897
+x86/wpshell.exe: PE/resources PASS; SHA256 4cddf9d89d08458c95d2d9ea6561b3dda3c520ca41e8b08c222989056159c3e7
+x86/WPS_ENUS.DLL: PE/resources PASS; SHA256 af298bb8cd057b65b6df79c2ea9487bc32c1d8e051ee124ee4c90710cbd60cd3
+x86/WNDLIST.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
+x86/LAUNCHPD.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
+x86/WINSHUT.EXE: PE/resources PASS; SHA256 0792864627e3817311c5c0fc8f0512aa69f8c55f61f8b2d42ec1571a050a37d4
+x64/wpshell.exe: PE/resources PASS; SHA256 13b6c8f8ba93703c117f32992550a389799eaed25a49e7dc54629e4de3ecab90
+x64/WPS_ENUS.DLL: PE/resources PASS; SHA256 eb99ebf345017598a5e23fb9f19489444440c353f5b4559512aab785282d6965
+x64/WNDLIST.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
+x64/LAUNCHPD.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
+x64/WINSHUT.EXE: PE/resources PASS; SHA256 1a89e20a1f33a01d7b64745f2040fbdab62140ebf845702cc152f183f4912031
 
-R3 live: user confirmed working.
-R4 runtime and migration: NOT VERIFIED; Wine remains blocked by local-socket restriction.
-Required Windows checks are in README: Explorer drop, real directory opening, long data filename,
-legacy profile read/new profile reopen, program reuse, window switching, help, setup, failed-save handling.
-The native usage guide is new content, not a conversion of the original WinHelp book.
+Runtime: new R5 GUI features NOT tested here; Wine local-socket restriction remains.
+No shutdown/logoff action was executed during testing.
+README lists image/mode/persistence and utility smoke tests.
+R5 preserves R4 profile layout and retains R1-R3 read migration.
+Native utility replacements: WNDLIST, LAUNCHPD, WINSHUT.
+PMTOWP and CONVINI remain unported historical migration tools.

@@ -1498,14 +1498,8 @@ void WPFOLDER::OnCreate(void)
    // Check if we need to draw an image as the folder's background.
    if (GetImageAttribute(IMAGE_COLOR_ONLY)==FALSE)
    {
-      // Load image bitmap and store pointer to image in memory.
-      lpDIBMem = LoadImage(GetImagePath());
-      // Create logical palette from DIB informtation.
-      SetImagePalette(CreatePaletteFromDIB(lpDIBMem));
-      // Convert DIB image to regular bitmap object (store bitmap handle internally).
-      SetImageBitmapHandle(ConvertDIBToDDB(lpDIBMem,GetImagePalette()));
-      // Destroy memory image of bitmap.
-      DestroyImage(lpDIBMem);
+      SetImagePalette(NULL);
+      SetImageBitmapHandle(PortLoadBackground(GetImagePath()));
    }
 
    // Check if original cursor was not the same as our "wait" cursor...
@@ -2351,20 +2345,8 @@ void WPFOLDER::UpdateBackgroundPageImageSettings(HWND hwndPage,WORD wControlID)
       // Check if user has selected a new image...
       if ((wControlID==0)||(wControlID==IDCB_BITMAPLIST))
       {
-         // Get current bitmap image selected in list.
-         DlgDirSelectComboBoxEx(hwndPage,szPath,MAX_PATH_FILENAME,IDCB_BITMAPLIST);
-         // If the user has a valid bitmap image currently selected...
-         if (stristr(szPath,GetString(IDSTR_IMAGE_NONE))==NULL)
-         {
-            // Get current Windows directory.
-            GetWindowsDirectory(szPath,MAX_PATH_FILENAME);
-            // Again, Get current bitmap image selected in list.
-            DlgDirSelectComboBoxEx(hwndPage,szImageFile,MAX_PATH_FILENAME,IDCB_BITMAPLIST);
-            // Concatenate current Windows path and current image filename.
-            strcat(szPath,"\\");
-            strcat(szPath,szImageFile);
-         }
-         // Store the new image's path (or "(none)" if none).
+         GetDlgItemTextA(hwndPage,IDCB_BITMAPLIST,szPath,sizeof(szPath));
+         if(!strcmp(szPath,GetString(IDSTR_IMAGE_NONE))) szPath[0]=0;
          SetImagePath(szPath);
       }
    }
@@ -2410,16 +2392,8 @@ BOOL WPFOLDER::ReloadPreviewAreaImage(HBITMAP *phbmpImage,HPALETTE *phpalImage,B
    // Check if folder has an image as background AND we do want to load a new image...
    if ((GetImageAttribute(IMAGE_COLOR_ONLY)==FALSE)&(fFreeOnly==FALSE))
    {
-      // Load new image bitmap into memory.
-      lpDIBMem = LoadImage(GetImagePath());
-      // Create logical palette from DIB information.
-      *phpalImage = CreatePaletteFromDIB(lpDIBMem);
-      // Convert DIB image to regular bitmap object (store bitmap handle internally).
-      *phbmpImage = ConvertDIBToDDB(lpDIBMem,*phpalImage);
-      // Destroy memory image of bitmap.
-      DestroyImage(lpDIBMem);
-      // Return success.
-      return (TRUE);
+      *phbmpImage = PortLoadBackground(GetImagePath());
+      return *phbmpImage!=NULL;
    }
    else
       // Return failure since we do not have a bitmap image currently selected as background.
@@ -2601,32 +2575,11 @@ void WPFOLDER::BackgroundPageProc(int nPageIndex,HWND hwndPage,WORD wAction,DWOR
             else
                CheckRadioButton(hwndPage,IDB_NORMALIMAGE,IDB_SCALEDIMAGE,IDB_TILEDIMAGE);
          }
-         // Get current Windows directory and concatenate "*.BMP" to it.
-         GetWindowsDirectory(szPath,(MAX_PATH_FILENAME-3));
-         strcat(szPath,"\\*.BMP");
-         // Set ComboBox control to contain a list of image (bitmap files).
-         DlgDirListComboBox(hwndPage,(LPSTR)szPath,IDCB_BITMAPLIST,0,0);
-         // Get current Windows directory and concatenate "*.DIB" to it.
-         GetWindowsDirectory(szPath,(MAX_PATH_FILENAME-3));
-         strcat(szPath,"\\*.DIB");
-         // Set ComboBox control to contain a list of image (device-independent bitmap files).
-         SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_DIR,0,(LPARAM)(LPCSTR)szPath);
-         // Add the "(none)" string to the top of the list and make it the current selection.
-         SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_INSERTSTRING,0,(LPARAM)(LPCSTR)GetString(IDSTR_IMAGE_NONE));
+         SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_ADDSTRING,0,(LPARAM)GetString(IDSTR_IMAGE_NONE));
          SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_SETCURSEL,0,0);
-         // If user has currently selected an image for background...
-         if (fColorOnly==FALSE)
-         {
-            // Extract filename from current image path string.
-            _splitpath(GetImagePath(),NULL,NULL,szPath,NULL);
-            // Check if image is currently in ComboBox's listbox...
-            if (SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_SELECTSTRING,0,(LPARAM)(LPSTR)szPath)==CB_ERR)
-            {
-               // Fill-in ComboBox with last image selected.
-               nListIndex = (int)SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_ADDSTRING,0,(LPARAM)(LPSTR)szPath);
-               // Make current folder image the current selection in ComboBox.
-               SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_SETCURSEL,(WPARAM)(WORD)nListIndex,0);
-            }
+         if(GetImagePath()[0]) {
+            nListIndex=(int)SendDlgItemMessageA(hwndPage,IDCB_BITMAPLIST,CB_ADDSTRING,0,(LPARAM)GetImagePath());
+            SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_SETCURSEL,nListIndex,0);
          }
          // Enable/Disable image controls depending on current folder background state flag.
          ImageControls(hwndPage,((fColorOnly==TRUE)? FALSE : TRUE));             
@@ -2641,6 +2594,19 @@ void WPFOLDER::BackgroundPageProc(int nPageIndex,HWND hwndPage,WORD wAction,DWOR
          // Depending on which button was pushed...
          switch (LOWORD(dwParam))
          {
+            case 1708:
+               if(PortBrowseBackground(hwndPage,szPath,sizeof(szPath))) {
+                  SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_RESETCONTENT,0,0);
+                  SendDlgItemMessageA(hwndPage,IDCB_BITMAPLIST,CB_ADDSTRING,0,(LPARAM)szPath);
+                  SendDlgItemMessage(hwndPage,IDCB_BITMAPLIST,CB_SETCURSEL,0,0);
+                  CheckDlgButton(hwndPage,IDB_COLORONLY,0);
+                  ImageControls(hwndPage,TRUE);
+                  UpdateBackgroundPageImageSettings(hwndPage,0);
+                  ReloadPreviewAreaImage(&m_hbmpPreviewImage,&m_hpalPreviewPalette,FALSE);
+                  ::InvalidateRect(hwndPage,NULL,TRUE);
+               }
+               break;
+
             case IDB_COLORONLY:
                // Get current state of "Color only" checkbox button.
                fColorOnly = ((IsDlgButtonChecked(hwndPage,IDB_COLORONLY)==1)? TRUE : FALSE);
