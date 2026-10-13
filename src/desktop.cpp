@@ -102,6 +102,9 @@ LRESULT WPDESKTOP::ClientWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lPa
    // Process window message...
    switch (uMsg)
    {
+      case WM_NCHITTEST:
+         return DefWindowProc(hWnd,uMsg,wParam,lParam);
+
       case WM_CREATE:  
          // Store desktop window handle in global variable.
          g_wpEnvironment.hwndDesktop = hWnd;

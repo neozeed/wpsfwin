@@ -38,6 +38,20 @@ template<class A,class B> inline A max(A a,B b) { return a>b?a:(A)b; }
 #define SetWindowOrg(h,x,y) SetWindowOrgEx(h,x,y,NULL)
 inline POINT PortMakePoint(LPARAM l) { POINT p={(short)LOWORD(l),(short)HIWORD(l)}; return p; }
 #define MAKEPOINT(l) PortMakePoint(l)
+// Match the square custom system-menu icon, even when Windows caption
+// buttons are wider than they are tall. Screen coordinates must be signed.
+inline LRESULT PortCaptionHitTest(HWND window, WPARAM wp, LPARAM lp) {
+ LRESULT hit = DefWindowProc(window, WM_NCHITTEST, wp, lp);
+ RECT r; GetWindowRect(window, &r);
+ POINT p = PortMakePoint(lp);
+ int x = p.x-r.left, y = p.y-r.top;
+ int left = GetSystemMetrics(SM_CXFRAME), top = GetSystemMetrics(SM_CYFRAME);
+ if ((hit == HTCAPTION || hit == HTSYSMENU) &&
+     x >= left && x < left+GetSystemMetrics(SM_CYSIZE)+1 &&
+     y >= top && y < top+GetSystemMetrics(SM_CYSIZE)+1)
+    return HTSYSMENU;
+ return hit;
+}
 void PortStartDiagnostics();
 void PortLog(const char*);
 BOOL PortRegisterControls(HINSTANCE);

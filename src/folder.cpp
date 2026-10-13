@@ -47,6 +47,8 @@ LRESULT WPFOLDER::ClientWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lPar
    // Process window message.
    switch (uMsg)
    {
+      case WM_NCHITTEST:
+         return PortCaptionHitTest(hWnd,wParam,lParam);
       case WM_CREATE:  
          // Load the folder's children objects' icons.
          if (LoadIcons()==FALSE)

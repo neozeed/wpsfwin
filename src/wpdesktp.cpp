@@ -560,7 +560,7 @@ void WPDESKTOP::SetImagePath(char *pszImagePath)
 //---------------------------------------------------------------------
 const char *WPDESKTOP::GetCaptionTitle(void)
 {
-   return "Workplace Shell for Windows - Native Port R1";
+   return "Workplace Shell for Windows - Native Port R2";
 }
 
 //---------------------------------------------------------------------
@@ -1011,8 +1011,7 @@ WNDPROC WPDESKTOP::GetWindows31DesktopProc(void)
 //---------------------------------------------------------------------
 void WPDESKTOP::SetClassBackgroundBrush(HBRUSH *phbrBackground)
 {
-   // Set background brush to nothing since Desktop is transparent.
-   *phbrBackground = (HBRUSH)(NULL);
+   WPFOLDER::SetClassBackgroundBrush(phbrBackground);
 }
 
 
@@ -1618,8 +1617,7 @@ void WPDESKTOP::OnWinINIChange(LPCSTR pszSection)
 //---------------------------------------------------------------------
 LRESULT WPDESKTOP::OnEraseBackground(HDC hdc)
 {
-   // First, let default window procedure paint background color.
-   return (DefWindowProc(GetHandle(),WM_ERASEBKGND,(WPARAM)hdc,0L));
+   return WPFOLDER::OnEraseBackground(hdc);
 }
 
 //---------------------------------------------------------------------
@@ -1664,7 +1662,7 @@ void WPDESKTOP::ImageControls(HWND hwndBackgroundPage,BOOL fEnable)
    EnableWindow(GetDlgItem(hwndBackgroundPage,IDCB_BITMAPLIST),fEnable);
    EnableWindow(GetDlgItem(hwndBackgroundPage,IDB_NORMALIMAGE),fEnable);
    EnableWindow(GetDlgItem(hwndBackgroundPage,IDB_TILEDIMAGE),fEnable);
-   EnableWindow(GetDlgItem(hwndBackgroundPage,IDB_SCALEDIMAGE),FALSE);
+   EnableWindow(GetDlgItem(hwndBackgroundPage,IDB_SCALEDIMAGE),fEnable);
    EnableWindow(GetDlgItem(hwndBackgroundPage,IDB_IMAGEGROUP),fEnable);
 }
 

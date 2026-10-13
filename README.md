@@ -1,13 +1,25 @@
-# Workplace Shell for Windows — native port R1
+# Workplace Shell for Windows — native port R2
 
 An experimental x86/x64 source port of the supplied IBM employee-written
 Workplace Shell for Windows 3.1 source. It retains the original C++ object,
 folder, drawing, drag/drop, template and settings code.
 
-**Status: both native builds and their resources have been verified. Runtime
-behavior has NOT been verified.** Wine could not start in the build environment
-because its required local socket was prohibited. This is a first Windows test
-build, not a claim of a fully working or production-ready port.
+**Status: R1 runs on the user's Windows machine. R2 builds and PE resources
+have been checked; these corrective changes still need a Windows smoke test.**
+
+## R2 corrections
+
+- Drive icons show the drive letter and volume label when available, with a
+  drive-letter fallback for unlabelled or unavailable media.
+- The top-left system-menu icon is square. Its hit area matches its painting,
+  so double-clicking the icon uses the system-menu close action.
+- The standalone desktop uses the folder background brush and image painting
+  instead of the old transparent Win16 desktop override. Scaled bitmap
+  backgrounds are also enabled.
+
+R1 profiles remain compatible. Close R1 and replace the EXE and matching
+resource DLL with R2 from the same architecture; keep your existing
+`wpshell32.dat` and `wpsettings.ini`. Drive titles refresh when the profile loads.
 
 ## Try it
 
@@ -93,7 +105,7 @@ dependencies. Run `make clean` to remove binaries and intermediate objects.
 - Fixed several inherited allocation/deallocation, uninitialized-value,
   pointer-truncation and string-search lifetime problems encountered in porting.
 
-## Boundaries of R1
+## Boundaries
 
 - English resources only. The remaining languages and support utilities
   (PMTOWP, CONVINI, WNDLIST, LAUNCHPD, WINSHUT and the old installer) are not ported.

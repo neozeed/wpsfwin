@@ -849,6 +849,19 @@ void WPDRIVE::SetDriveIndex(UINT uDriveIndex)
    // Construct default path using drive letter.
    szPath[0] = (char)('A' + uDriveIndex);
    SetPath(szPath);
+   // Always show a drive letter, including unlabelled or unavailable media.
+   char root[] = "X:\\";
+   root[0] = szPath[0];
+   char volume[MAX_PATH] = "";
+   char title[MAX_TITLE_NAME+1];
+   UINT oldMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+   BOOL labelled = GetVolumeInformationA(root,volume,sizeof(volume),NULL,NULL,NULL,NULL,0);
+   SetErrorMode(oldMode);
+   if (labelled && volume[0])
+      snprintf(title,sizeof(title),"%c: %.*s",root[0],(int)sizeof(title)-4,volume);
+   else
+      snprintf(title,sizeof(title),"%c:",root[0]);
+   SetTitle(title);
    // Destroy directory file objects from memory.
    FreeDirectoryFiles();
    // Clear current icon so we pick up default icon representing new drive index.

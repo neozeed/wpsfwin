@@ -108,6 +108,8 @@ LRESULT WPNOTEBOOK::ClientWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
    // Process window message.
    switch (uMsg)
    {
+      case WM_NCHITTEST:
+         return PortCaptionHitTest(hWnd,wParam,lParam);
       case WM_CREATE:
          // Store the window handle for use later.
          SetHandle(hWnd);

@@ -830,7 +830,7 @@ void WPWINDOW::FillCaptionBar(HDC hdc,int cx,int cy,BOOL fActive)
 
    // Draw rectangle using the caption fill brush.
    Rectangle(hdc,
-      (GetSystemMetrics(SM_CXSIZE)+GetSystemMetrics(SM_CXFRAME)+1),
+      (GetSystemMetrics(SM_CYSIZE)+GetSystemMetrics(SM_CXFRAME)+1),
       GetSystemMetrics(SM_CYFRAME),
       (cx-GetSystemMetrics(SM_CXFRAME)+1),
       (GetSystemMetrics(SM_CYFRAME)+GetSystemMetrics(SM_CYSIZE)+1));
@@ -931,7 +931,7 @@ void WPWINDOW::DrawCaptionBarText(HDC hdc,int cx,int cy,BOOL fActive)
 
    // Calculate caption rectangle.
    SetRect(&rcCaption,
-      (GetSystemMetrics(SM_CXSIZE)+GetSystemMetrics(SM_CXFRAME)+16),
+      (GetSystemMetrics(SM_CYSIZE)+GetSystemMetrics(SM_CXFRAME)+8),
       GetSystemMetrics(SM_CYFRAME),
       (cx-GetSystemMetrics(SM_CXFRAME)),
       (GetSystemMetrics(SM_CYFRAME)+GetSystemMetrics(SM_CYSIZE)));
@@ -1003,7 +1003,7 @@ void WPWINDOW::DrawIconOnSystemMenu(HDC hdc,HICON hIcon)
    // Draw system menu icon into actual window top-left corner.
    StretchBlt(hdc,GetSystemMetrics(SM_CXFRAME),
                   GetSystemMetrics(SM_CYFRAME),
-                  GetSystemMetrics(SM_CXSIZE)+1,
+                  GetSystemMetrics(SM_CYSIZE)+1,
                   GetSystemMetrics(SM_CYSIZE)+1,
                   hdcMem,0,0,sizeIcon.cx,sizeIcon.cy,SRCCOPY);
 
